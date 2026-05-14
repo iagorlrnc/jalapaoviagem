@@ -18,7 +18,7 @@ export function HeroSection() {
   }, [])
 
   return (
-    <section className="relative h-screen min-h-[700px] flex items-center overflow-hidden">
+    <section className="relative h-screen min-h-[700px] flex items-center pb-20 md:pb-32 overflow-hidden">
       {/* Background layers */}
       <div className="absolute inset-0 z-0">
         <div
@@ -49,9 +49,9 @@ export function HeroSection() {
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
         <div className="max-w-3xl">
-          <p className="section-label animate-fade-up opacity-0 animate-delay-100">
+          <span className="inline-block bg-[#c98228] text-white px-4 py-2 rounded-full font-mono text-[10px] uppercase tracking-[0.3em] font-bold mb-8 animate-fade-up opacity-0 animate-delay-100 shadow-lg shadow-[#c98228]/20">
             ✦ Agência de Turismo Tocantins
-          </p>
+          </span>
 
           <h1 className="display-heading text-white text-6xl md:text-8xl font-black mb-6 
                          animate-fade-up opacity-0 animate-delay-200">
@@ -77,7 +77,7 @@ export function HeroSection() {
             <button
               onClick={() => document.getElementById('destinos')?.scrollIntoView({ behavior: 'smooth' })}
               className="border border-white/30 text-white hover:bg-white hover:text-black
-                         font-bold px-8 py-4 rounded-none transition-all duration-300 
+                         font-bold px-8 py-4 rounded-full transition-all duration-300 
                          uppercase tracking-widest text-sm"
             >
               Explorar Destinos
@@ -100,12 +100,6 @@ export function HeroSection() {
         </div>
       </div>
 
-      {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 
-                      animate-bounce flex flex-col items-center gap-2">
-        <span className="font-mono text-white/30 text-xs uppercase tracking-widest">Scroll</span>
-        <ChevronDown size={16} className="text-[#c98228]" />
-      </div>
     </section>
   )
 }

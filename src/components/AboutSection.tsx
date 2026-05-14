@@ -96,17 +96,17 @@ export function AboutSection() {
         {/* Values */}
         <div className="mb-24">
           <p className="section-label text-center mb-4">✦ Nossos Valores</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-black/5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {values.map(({ icon: Icon, title, description }) => (
               <div key={title}
-                className="bg-white p-8 group hover:bg-sand-50 transition-colors duration-300">
-                <div className="w-10 h-10 border border-[#c98228]/40 flex items-center justify-center 
-                                mb-6 group-hover:border-[#c98228] group-hover:bg-[#c98228]/10 
-                                transition-all duration-300">
-                  <Icon size={18} className="text-[#c98228]" />
+                className="bg-white p-8 rounded-[2rem] border border-black/5 
+                           hover:border-[#c98228]/30 hover:shadow-xl transition-all duration-500 group">
+                <div className="w-12 h-12 bg-[#c98228]/5 rounded-2xl flex items-center justify-center 
+                                mb-6 group-hover:bg-[#c98228] transition-all duration-500 shadow-sm">
+                  <Icon size={20} className="text-[#c98228] group-hover:text-white transition-colors" />
                 </div>
-                <h3 className="font-display font-bold text-night text-lg mb-3">{title}</h3>
-                <p className="font-body text-night/40 text-sm leading-relaxed">{description}</p>
+                <h3 className="font-display font-bold text-night text-xl mb-3">{title}</h3>
+                <p className="font-body text-night/50 text-sm leading-relaxed">{description}</p>
               </div>
             ))}
           </div>
@@ -121,14 +121,20 @@ export function AboutSection() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {team.map(member => (
               <div key={member.name}
-                className="border border-black/10 p-6 hover:border-[#c98228]/40 transition-all duration-300">
-                <div className="w-16 h-16 bg-gradient-to-br from-[#c98228] to-[#e8c070] mb-4
-                                flex items-center justify-center font-display text-2xl font-black text-white">
+                className="bg-white border border-black/5 p-8 rounded-[2rem] 
+                           hover:border-[#c98228]/30 hover:shadow-xl transition-all duration-500 group">
+                <div className="w-20 h-20 bg-gradient-to-br from-[#c98228] to-[#e8c070] mb-6
+                                flex items-center justify-center font-display text-2xl font-black text-white
+                                rounded-2xl group-hover:rotate-6 transition-transform duration-500 shadow-lg">
                   {member.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
                 </div>
-                <h4 className="font-display font-bold text-night text-lg">{member.name}</h4>
-                <p className="font-body text-[#c98228] text-sm mb-1">{member.role}</p>
-                <p className="font-mono text-night/30 text-xs uppercase tracking-widest">{member.years}</p>
+                <h4 className="font-display font-bold text-night text-xl mb-1">{member.name}</h4>
+                <p className="font-body text-[#c98228] text-sm mb-4 font-semibold">{member.role}</p>
+                <div className="pt-4 border-t border-black/5">
+                  <p className="font-mono text-night/30 text-[10px] uppercase tracking-widest">
+                    {member.years}
+                  </p>
+                </div>
               </div>
             ))}
           </div>

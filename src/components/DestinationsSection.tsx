@@ -13,7 +13,7 @@ const destinations = [
   {
     name: 'Fervedouros',
     description:
-      'Nascentes de pressão onde a água borbulha formando piscinas naturais de cor turquesa que flutuam você sem esforço.',
+      'Nascentes de pressão onde a água borbulha formando piscinas naturais.',
     tag: 'Fenômeno Natural',
     image: 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=800&q=80',
     rating: 5,
@@ -21,7 +21,7 @@ const destinations = [
   {
     name: 'Cachoeira da Velha',
     description:
-      'Uma das maiores quedas d\'água do Brasil, com mais de 1,5 km de extensão, escondida no coração do cerrado tocantinense.',
+      'Uma das maiores quedas d\'água do Brasil, com mais de 1,5 km de extensão.',
     tag: 'Majestosa',
     image: 'https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?w=800&q=80',
     rating: 5,
@@ -29,7 +29,7 @@ const destinations = [
   {
     name: 'Serra do Espírito Santo',
     description:
-      'Formação rochosa mística que os indígenas consideram sagrada, com vistas panorâmicas inesquecíveis ao pôr do sol.',
+      'Formação rochosa que os indígenas consideram sagrada com vistas ao pôr do sol.',
     tag: 'Sagrado & Místico',
     image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=80',
     rating: 4,
@@ -37,7 +37,7 @@ const destinations = [
   {
     name: 'Rio Novo',
     description:
-      'Águas transparentes que revelam o fundo de areia branca e pedras coloridas, perfeito para banho e caiaque.',
+      'Águas cristalinas que revelam o fundo de areia branca e pedras coloridas.',
     tag: 'Águas Cristalinas',
     image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80',
     rating: 5,

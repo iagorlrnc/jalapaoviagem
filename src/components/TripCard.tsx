@@ -34,12 +34,13 @@ export function TripCard({ trip }: TripCardProps) {
 
   return (
     <>
-      <div className="group relative flex flex-col border border-black/10 hover:border-[#c98228]/50 
-                      transition-all duration-500 overflow-hidden bg-white shadow-sm">
+      <div className="group relative flex flex-col border border-black/5 hover:border-[#c98228]/30 
+                      transition-all duration-500 overflow-hidden bg-white shadow-sm hover:shadow-xl 
+                      rounded-[2rem]">
         {/* Image */}
         <div className="relative overflow-hidden" style={{ height: '220px' }}>
           <div
-            className="absolute inset-0 transition-transform duration-700 group-hover:scale-105"
+            className="absolute inset-0 transition-transform duration-1000 group-hover:scale-110"
             style={{
               backgroundImage: `url('${trip.image_url}')`,
               backgroundSize: 'cover',
@@ -154,15 +155,15 @@ export function TripCard({ trip }: TripCardProps) {
                 <p className="font-mono text-[10px] uppercase tracking-widest text-[#c98228] mb-2">
                   Destaques
                 </p>
-                <div className="flex flex-wrap gap-2">
-                  {trip.highlights.map(h => (
-                    <span key={h}
-                      className="font-body text-xs text-night/60 bg-black/5 
-                                 border border-black/5 px-2 py-1">
-                      {h}
-                    </span>
-                  ))}
-                </div>
+                  <div className="flex flex-wrap gap-2">
+                    {trip.highlights.map(h => (
+                      <span key={h}
+                        className="font-body text-[10px] uppercase tracking-wider text-[#c98228] bg-[#c98228]/5 
+                                   border border-[#c98228]/10 px-3 py-1 rounded-full">
+                        {h}
+                      </span>
+                    ))}
+                  </div>
               </div>
 
               {/* Includes */}

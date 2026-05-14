@@ -153,8 +153,8 @@ export function AdminPage() {
             { icon: Users, label: 'Viajantes (ativos)', value: totalPeople.toString(), color: 'text-sky-600' },
           ].map(({ icon: Icon, label, value, color }) => (
             <div key={label}
-              className="bg-white border border-black/10 p-5 hover:border-black/20 
-                         transition-colors duration-200 shadow-sm">
+              className="bg-white border border-black/5 p-6 rounded-[2rem] hover:shadow-lg 
+                         transition-all duration-300 shadow-sm group">
               <div className="flex items-start justify-between mb-4">
                 <Icon size={18} className={color} />
                 <TrendingUp size={12} className="text-night/10" />
@@ -168,7 +168,7 @@ export function AdminPage() {
         {/* Main content */}
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Table */}
-          <div className="flex-1 bg-white border border-black/10 shadow-sm">
+          <div className="flex-1 bg-white border border-black/5 shadow-sm rounded-[2rem] overflow-hidden">
             {/* Table header */}
             <div className="flex flex-col md:flex-row gap-4 p-5 border-b border-black/10">
               <div className="relative flex-1">
@@ -355,7 +355,7 @@ export function AdminPage() {
 
           {/* Detail Panel */}
           {selectedReservation && (
-            <div className="w-full lg:w-80 bg-white border border-black/10 p-6 self-start shadow-xl">
+            <div className="w-full lg:w-80 bg-white border border-black/5 p-8 self-start shadow-xl rounded-[2rem]">
               <div className="flex items-center justify-between mb-6">
                 <p className="font-mono text-[10px] uppercase tracking-widest text-[#c98228]">
                   Detalhes

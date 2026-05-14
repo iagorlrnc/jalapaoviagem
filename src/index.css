@@ -46,9 +46,9 @@
 
 @layer components {
   .btn-primary {
-    @apply bg-sand-500 hover:bg-sand-400 text-white font-bold px-8 py-4 rounded-none 
+    @apply bg-sand-500 hover:bg-sand-400 text-white font-bold px-8 py-4 rounded-full 
            transition-all duration-300 uppercase tracking-widest text-sm
-           relative overflow-hidden;
+           relative overflow-hidden shadow-lg shadow-sand-500/20;
   }
 
   .btn-primary::before {
@@ -68,7 +68,7 @@
 
   .btn-outline {
     @apply border border-sand-500 text-sand-600 hover:bg-sand-500 hover:text-white
-           font-bold px-8 py-4 rounded-none transition-all duration-300 
+           font-bold px-8 py-4 rounded-full transition-all duration-300 
            uppercase tracking-widest text-sm;
   }
 
@@ -86,8 +86,8 @@
 
   .input-field {
     @apply w-full bg-white border border-black/10 text-night placeholder-black/30
-           px-4 py-3 rounded-none focus:outline-none focus:border-sand-500 
-           transition-colors duration-200 font-body text-sm;
+           px-4 py-3 rounded-xl focus:outline-none focus:border-sand-500 
+           transition-colors duration-200 font-body text-sm shadow-sm;
   }
 }
 

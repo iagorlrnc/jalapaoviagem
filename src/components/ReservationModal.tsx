@@ -75,10 +75,10 @@ export function ReservationModal({ trip, onClose }: Props) {
       />
 
       {/* Modal */}
-      <div className="relative z-10 w-full max-w-2xl bg-white border border-black/10 
-                      overflow-y-auto max-h-[90vh] shadow-2xl">
+      <div className="relative z-10 w-full max-w-2xl bg-white border border-black/5 
+                      overflow-y-auto max-h-[90vh] shadow-2xl rounded-[2.5rem]">
         {/* Header */}
-        <div className="flex items-start justify-between p-6 border-b border-black/5">
+        <div className="flex items-start justify-between p-8 border-b border-black/5">
           <div>
             <p className="section-label mb-1">✦ Reserva de Viagem</p>
             <h2 className="font-display text-2xl font-bold text-night">{trip.name}</h2>
@@ -90,15 +90,16 @@ export function ReservationModal({ trip, onClose }: Props) {
           </div>
           <button
             onClick={onClose}
-            className="text-night/40 hover:text-night transition-colors p-1"
+            className="w-10 h-10 border border-black/5 rounded-full flex items-center justify-center
+                       text-night/40 hover:text-night hover:bg-black/5 transition-all"
           >
-            <X size={22} />
+            <X size={20} />
           </button>
         </div>
 
         {step === 'form' && (
-          <div className="p-6 space-y-5">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="p-8 space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="md:col-span-2">
                 <label className="font-mono text-[10px] uppercase tracking-widest text-night/40 block mb-2">
                   Nome Completo *
@@ -163,7 +164,7 @@ export function ReservationModal({ trip, onClose }: Props) {
                   name="num_people"
                   value={form.num_people}
                   onChange={handleChange}
-                  className="input-field"
+                  className="input-field cursor-pointer"
                 >
                   {Array.from({ length: Math.min(trip.available_spots, 6) }, (_, i) => i + 1).map(n => (
                     <option key={n} value={n}>{n} pessoa{n > 1 ? 's' : ''}</option>
@@ -187,47 +188,44 @@ export function ReservationModal({ trip, onClose }: Props) {
             </div>
 
             {/* Price Summary */}
-            <div className="bg-sand-50 border border-black/5 p-4 space-y-3">
-              <p className="font-mono text-[10px] uppercase tracking-widest text-[#c98228]">
+            <div className="bg-sand-50/50 border border-black/5 p-6 rounded-3xl space-y-4">
+              <p className="font-mono text-[10px] uppercase tracking-widest text-[#c98228] font-bold">
                 Resumo do Pedido
               </p>
               <div className="flex justify-between font-body text-sm text-night/60">
                 <span>{form.num_people} × {trip.name}</span>
                 <span>{formatPrice(trip.price)} / pessoa</span>
               </div>
-              <div className="border-t border-black/5 pt-3 flex justify-between">
-                <span className="font-display font-bold text-night">Total</span>
-                <span className="font-display text-xl font-bold text-gradient">
+              <div className="border-t border-black/5 pt-4 flex justify-between items-center">
+                <span className="font-display font-bold text-night">Total da Reserva</span>
+                <span className="font-display text-2xl font-bold text-gradient">
                   {formatPrice(totalPrice)}
                 </span>
               </div>
-              <p className="font-mono text-[10px] text-night/30">
-                * O pagamento será confirmado via WhatsApp após a reserva.
-              </p>
             </div>
 
             {errorMsg && (
-              <div className="flex items-center gap-2 text-red-600 bg-red-50 
-                              border border-red-200 p-3">
-                <AlertCircle size={16} />
+              <div className="flex items-center gap-3 text-red-600 bg-red-50 
+                              border border-red-100 p-4 rounded-2xl">
+                <AlertCircle size={18} />
                 <span className="font-body text-sm">{errorMsg}</span>
               </div>
             )}
 
-            <div className="flex gap-3 pt-2">
+            <div className="flex gap-4 pt-2">
               <button
                 onClick={onClose}
-                className="btn-outline flex-1 py-3 text-xs"
+                className="btn-outline flex-1 py-4 text-xs rounded-full"
               >
                 Cancelar
               </button>
               <button
                 onClick={handleSubmit}
                 disabled={loading}
-                className="btn-primary flex-1 py-3 text-xs flex items-center justify-center gap-2"
+                className="btn-primary flex-1 py-4 text-xs flex items-center justify-center gap-2 rounded-full"
               >
                 {loading ? (
-                  <><Loader2 size={14} className="animate-spin" /> Enviando...</>
+                  <><Loader2 size={16} className="animate-spin" /> Enviando...</>
                 ) : (
                   'Confirmar Reserva'
                 )}
@@ -237,63 +235,62 @@ export function ReservationModal({ trip, onClose }: Props) {
         )}
 
         {step === 'success' && (
-          <div className="p-12 flex flex-col items-center text-center gap-6">
-            <div className="w-16 h-16 border border-emerald-200 bg-emerald-50 
-                            flex items-center justify-center">
-              <CheckCircle size={32} className="text-emerald-600" />
+          <div className="p-12 flex flex-col items-center text-center gap-8">
+            <div className="w-20 h-20 bg-emerald-50 text-emerald-600 rounded-3xl
+                            flex items-center justify-center shadow-inner">
+              <CheckCircle size={40} />
             </div>
             <div>
-              <h3 className="font-display text-2xl font-bold text-night mb-2">
-                Reserva Enviada!
+              <h3 className="font-display text-3xl font-bold text-night mb-3">
+                Reserva Solicitada!
               </h3>
-              <p className="font-body text-night/50 text-sm leading-relaxed max-w-sm">
-                Sua solicitação para <strong className="text-night">{trip.name}</strong> foi recebida.
-                Nossa equipe entrará em contato via WhatsApp em até 24 horas para confirmar e 
-                finalizar o pagamento.
+              <p className="font-body text-night/50 text-base leading-relaxed max-w-sm mx-auto">
+                Sua solicitação para <strong className="text-night">{trip.name}</strong> foi recebida com sucesso.
+                Entraremos em contato via WhatsApp em breve.
               </p>
             </div>
-            <div className="bg-sand-50 border border-black/5 p-4 w-full text-left space-y-2">
-              <p className="font-mono text-[10px] text-[#c98228] uppercase tracking-widest mb-3">
-                Detalhes da Reserva
+            <div className="bg-sand-50/50 border border-black/5 p-8 rounded-3xl w-full text-left space-y-3">
+              <p className="font-mono text-[10px] text-[#c98228] uppercase tracking-widest mb-4 font-bold">
+                Detalhes da Confirmação
               </p>
               <div className="flex justify-between font-body text-sm">
-                <span className="text-night/40">Nome</span>
-                <span className="text-night">{form.client_name}</span>
+                <span className="text-night/40 text-xs uppercase tracking-wider">Cliente</span>
+                <span className="text-night font-bold">{form.client_name}</span>
               </div>
               <div className="flex justify-between font-body text-sm">
-                <span className="text-night/40">Viagem</span>
-                <span className="text-night">{trip.name}</span>
+                <span className="text-night/40 text-xs uppercase tracking-wider">Viagem</span>
+                <span className="text-night font-bold">{trip.name}</span>
               </div>
               <div className="flex justify-between font-body text-sm">
-                <span className="text-night/40">Pessoas</span>
-                <span className="text-night">{form.num_people}</span>
+                <span className="text-night/40 text-xs uppercase tracking-wider">Pessoas</span>
+                <span className="text-night font-bold">{form.num_people}</span>
               </div>
-              <div className="flex justify-between font-body text-sm">
-                <span className="text-night/40">Total</span>
-                <span className="text-gradient font-bold">{formatPrice(totalPrice)}</span>
+              <div className="flex justify-between font-body text-sm pt-3 border-t border-black/5">
+                <span className="text-night/40 text-xs uppercase tracking-wider">Valor Total</span>
+                <span className="text-gradient font-bold text-xl font-display">{formatPrice(totalPrice)}</span>
               </div>
             </div>
-            <button onClick={onClose} className="btn-primary px-12">
-              Fechar
+            <button onClick={onClose} className="btn-primary px-16 py-4 rounded-full">
+              Fechar e Voltar
             </button>
           </div>
         )}
 
         {step === 'error' && (
-          <div className="p-12 flex flex-col items-center text-center gap-6">
-            <div className="w-16 h-16 border border-red-200 bg-red-50 
-                            flex items-center justify-center">
-              <AlertCircle size={32} className="text-red-600" />
+          <div className="p-12 flex flex-col items-center text-center gap-8">
+            <div className="w-20 h-20 bg-red-50 text-red-600 rounded-3xl
+                            flex items-center justify-center shadow-inner">
+              <AlertCircle size={40} />
             </div>
             <div>
-              <h3 className="font-display text-2xl font-bold text-night mb-2">Erro na Reserva</h3>
-              <p className="font-body text-night/50 text-sm">{errorMsg}</p>
+              <h3 className="font-display text-3xl font-bold text-night mb-3">Ops! Algo deu errado</h3>
+              <p className="font-body text-night/50 text-base">{errorMsg}</p>
             </div>
-            <div className="flex gap-3">
-              <button onClick={() => setStep('form')} className="btn-outline px-8">
+            <div className="flex gap-4 w-full max-w-xs mx-auto">
+              <button onClick={() => setStep('form')} className="btn-outline flex-1 py-4 rounded-full">
                 Tentar Novamente
               </button>
-              <button onClick={onClose} className="btn-primary px-8">
+              <button onClick={onClose} className="btn-primary flex-1 py-4 rounded-full">
                 Fechar
               </button>
             </div>

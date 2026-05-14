@@ -73,7 +73,7 @@ export function AdminLoginPage() {
         </div>
 
         {/* Form */}
-        <div className="border border-black/10 bg-white/80 backdrop-blur-sm p-8">
+        <div className="bg-white/80 backdrop-blur-md p-10 rounded-[2.5rem] shadow-2xl border border-black/5">
           <p className="font-mono text-[10px] uppercase tracking-widest text-[#c98228] mb-6">
             Acesso Restrito
           </p>

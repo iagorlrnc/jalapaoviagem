@@ -20,11 +20,11 @@ export function ContactSection() {
               no horário comercial. Para urgências, use nosso WhatsApp.
             </p>
 
-            <div className="space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {[
                 {
                   icon: Phone,
-                  label: 'WhatsApp / Telefone',
+                  label: 'WhatsApp',
                   value: '(63) 9 9999-9999',
                   href: 'https://wa.me/556399999999',
                 },
@@ -36,34 +36,34 @@ export function ContactSection() {
                 },
                 {
                   icon: MapPin,
-                  label: 'Endereço',
-                  value: 'Palmas, Tocantins — Brasil',
+                  label: 'Localização',
+                  value: 'Palmas, Tocantins',
                   href: '#',
                 },
                 {
                   icon: Clock,
-                  label: 'Horário de Atendimento',
-                  value: 'Seg–Sex: 8h–18h | Sáb: 8h–12h',
+                  label: 'Atendimento',
+                  value: 'Seg–Sex: 8h–18h',
                   href: '#',
                 },
               ].map(({ icon: Icon, label, value, href }) => (
                 <a
                   key={label}
                   href={href}
-                  className="flex items-start gap-4 group"
+                  className="p-5 bg-white border border-black/5 rounded-3xl group 
+                             hover:border-[#c98228]/30 transition-all duration-300"
                   target={href.startsWith('http') ? '_blank' : undefined}
                   rel="noopener noreferrer"
                 >
-                  <div className="w-10 h-10 border border-[#c98228]/30 flex items-center justify-center
-                                  flex-shrink-0 group-hover:border-[#c98228] group-hover:bg-[#c98228]/10 
-                                  transition-all duration-300 mt-0.5">
-                    <Icon size={16} className="text-[#c98228]" />
+                  <div className="w-10 h-10 bg-[#c98228]/5 flex items-center justify-center
+                                  group-hover:bg-[#c98228] transition-all duration-500 mb-3 rounded-xl">
+                    <Icon size={16} className="text-[#c98228] group-hover:text-white" />
                   </div>
                   <div>
-                    <p className="font-mono text-[10px] uppercase tracking-widest text-night/30 mb-0.5">
+                    <p className="font-mono text-[9px] uppercase tracking-widest text-night/30 mb-1">
                       {label}
                     </p>
-                    <p className="font-body text-night/70 group-hover:text-night transition-colors">
+                    <p className="font-body text-xs text-night/70 group-hover:text-night transition-colors font-bold break-all">
                       {value}
                     </p>
                   </div>
@@ -72,7 +72,7 @@ export function ContactSection() {
             </div>
 
             {/* Social */}
-            <div className="flex gap-3 mt-10">
+            <div className="flex gap-4 mt-10">
               {[
                 { icon: Instagram, href: '#', label: 'Instagram' },
                 { icon: Facebook, href: '#', label: 'Facebook' },
@@ -81,32 +81,34 @@ export function ContactSection() {
                   key={label}
                   href={href}
                   aria-label={label}
-                  className="w-10 h-10 border border-black/20 flex items-center justify-center
-                             text-night/40 hover:border-[#c98228] hover:text-[#c98228] 
-                             transition-all duration-300"
+                  className="w-12 h-12 bg-white border border-black/5 rounded-full flex items-center justify-center
+                             text-night/40 hover:text-white hover:bg-[#c98228] hover:border-[#c98228]
+                             transition-all duration-500 shadow-sm"
                 >
-                  <Icon size={16} />
+                  <Icon size={18} />
                 </a>
               ))}
             </div>
           </div>
 
           {/* Right: Quick contact form */}
-          <div className="border border-black/10 p-8">
-            <p className="font-mono text-[10px] uppercase tracking-widest text-[#c98228] mb-6">
-              Envie uma Mensagem
+          <div className="bg-white border border-black/5 p-10 rounded-[2.5rem] shadow-xl">
+            <p className="font-mono text-[10px] uppercase tracking-widest text-[#c98228] mb-8 font-bold text-center">
+              ✦ Envie uma Mensagem
             </p>
-            <div className="space-y-4">
-              <input
-                type="text"
-                placeholder="Seu nome"
-                className="input-field"
-              />
-              <input
-                type="email"
-                placeholder="Seu e-mail"
-                className="input-field"
-              />
+            <div className="space-y-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <input
+                  type="text"
+                  placeholder="Seu nome"
+                  className="input-field"
+                />
+                <input
+                  type="email"
+                  placeholder="Seu e-mail"
+                  className="input-field"
+                />
+              </div>
               <select className="input-field">
                 <option value="">Assunto da mensagem</option>
                 <option>Informações sobre viagens</option>
@@ -119,11 +121,11 @@ export function ContactSection() {
                 placeholder="Sua mensagem..."
                 className="input-field resize-none"
               />
-              <button className="btn-primary w-full">
+              <button className="btn-primary w-full py-5 text-sm">
                 Enviar Mensagem
               </button>
-              <p className="font-mono text-[10px] text-night/20 text-center tracking-widest">
-                Para reservas, use o botão "Reservar" nas viagens acima.
+              <p className="font-mono text-[9px] text-night/20 text-center uppercase tracking-widest">
+                Dúvidas urgentes? Use nosso canal de WhatsApp.
               </p>
             </div>
           </div>
