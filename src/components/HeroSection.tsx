@@ -31,8 +31,8 @@ export function HeroSection() {
           }}
         />
         {/* Gradient overlays */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0f0e0a]/70 via-[#0f0e0a]/30 to-[#0f0e0a]" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0f0e0a]/80 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-[#0f0e0a]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-transparent" />
       </div>
 
       {/* Decorative grid lines */}
@@ -53,7 +53,7 @@ export function HeroSection() {
             ✦ Agência de Turismo Tocantins
           </p>
 
-          <h1 className="display-heading text-6xl md:text-8xl font-black mb-6 
+          <h1 className="display-heading text-white text-6xl md:text-8xl font-black mb-6 
                          animate-fade-up opacity-0 animate-delay-200">
             O{' '}
             <em className="text-gradient not-italic">Jalapão</em>
@@ -76,7 +76,9 @@ export function HeroSection() {
             </button>
             <button
               onClick={() => document.getElementById('destinos')?.scrollIntoView({ behavior: 'smooth' })}
-              className="btn-outline"
+              className="border border-white/30 text-white hover:bg-white hover:text-black
+                         font-bold px-8 py-4 rounded-none transition-all duration-300 
+                         uppercase tracking-widest text-sm"
             >
               Explorar Destinos
             </button>

@@ -56,7 +56,7 @@ export function DestinationsSection() {
   const [hovered, setHovered] = useState<number | null>(null)
 
   return (
-    <section id="destinos" className="py-32 px-6 bg-[#0f0e0a] relative">
+    <section id="destinos" className="py-32 px-6 bg-white relative">
       {/* Decorative top line */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#c98228]/40 to-transparent" />
 
@@ -70,21 +70,24 @@ export function DestinationsSection() {
               <span className="text-gradient">Jalapão</span>
             </h2>
           </div>
-          <p className="font-body text-white/50 max-w-sm text-sm leading-relaxed">
+          <p className="font-body text-night/50 max-w-sm text-sm leading-relaxed">
             Cada destino é uma experiência única. Nossa equipe conhece cada trilha,
             cada fervedouro e cada pôr do sol perfeito.
           </p>
         </div>
 
-        {/* Destinations Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-white/10">
+        {/* Destinations Grid: Custom Bento Proportions (5-col) */}
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           {destinations.map((dest, i) => (
             <div
               key={dest.name}
               onMouseEnter={() => setHovered(i)}
               onMouseLeave={() => setHovered(null)}
-              className="relative overflow-hidden bg-[#0f0e0a] cursor-pointer group"
-              style={{ aspectRatio: '4/3' }}
+              className={`relative overflow-hidden bg-white cursor-pointer group rounded-[2.5rem] 
+                         transition-all duration-500 shadow-sm hover:shadow-xl
+                         ${i === 0 ? 'md:row-span-2 md:col-span-3 aspect-[4/5] md:aspect-auto' : 
+                           i === 5 ? 'md:col-span-5 aspect-[2/1] md:aspect-[6/1]' : 
+                           'col-span-1 aspect-square'}`}
             >
               {/* Image */}
               <div
@@ -97,8 +100,8 @@ export function DestinationsSection() {
               />
 
               {/* Gradient */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0f0e0a] via-[#0f0e0a]/40 to-transparent
-                              group-hover:via-[#0f0e0a]/60 transition-all duration-500" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent
+                              group-hover:via-black/40 transition-all duration-500" />
 
               {/* Tag */}
               <div className="absolute top-4 left-4 z-10">
@@ -134,9 +137,6 @@ export function DestinationsSection() {
                 </p>
               </div>
 
-              {/* Bottom border reveal */}
-              <div className="absolute bottom-0 left-0 h-0.5 bg-[#c98228] transition-all duration-500
-                              w-0 group-hover:w-full" />
             </div>
           ))}
         </div>

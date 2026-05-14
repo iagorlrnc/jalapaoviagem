@@ -4,14 +4,14 @@
 
 @layer base {
   :root {
-    --sand-light: #f9eedb;
+    --sand-light: #fdf8f0;
     --sand-mid: #e8c070;
     --sand-dark: #c98228;
     --cerrado-green: #2d852d;
-    --night: #0f0e0a;
-    --dusk: #1e1a12;
-    --text-primary: #f5f0e8;
-    --text-muted: #b8a98a;
+    --night: #ffffff;
+    --dusk: #fdfcfb;
+    --text-primary: #1a1a0a;
+    --text-muted: #5a3318;
   }
 
   * {
@@ -29,14 +29,14 @@
 
   ::selection {
     background: #c98228;
-    color: #0f0e0a;
+    color: #ffffff;
   }
 
   ::-webkit-scrollbar {
     width: 6px;
   }
   ::-webkit-scrollbar-track {
-    background: #1e1a12;
+    background: #fdfcfb;
   }
   ::-webkit-scrollbar-thumb {
     background: #c98228;
@@ -46,7 +46,7 @@
 
 @layer components {
   .btn-primary {
-    @apply bg-sand-500 hover:bg-sand-400 text-night font-bold px-8 py-4 rounded-none 
+    @apply bg-sand-500 hover:bg-sand-400 text-white font-bold px-8 py-4 rounded-none 
            transition-all duration-300 uppercase tracking-widest text-sm
            relative overflow-hidden;
   }
@@ -67,39 +67,33 @@
   }
 
   .btn-outline {
-    @apply border border-sand-500 text-sand-400 hover:bg-sand-500 hover:text-night
+    @apply border border-sand-500 text-sand-600 hover:bg-sand-500 hover:text-white
            font-bold px-8 py-4 rounded-none transition-all duration-300 
            uppercase tracking-widest text-sm;
   }
 
   .section-label {
-    @apply font-mono text-sand-500 text-xs uppercase tracking-[0.3em] mb-4;
+    @apply font-mono text-sand-600 text-xs uppercase tracking-[0.3em] mb-4;
   }
 
   .display-heading {
-    @apply font-display text-white leading-[1.05];
+    @apply font-display text-night leading-[1.05];
   }
 
   .card-glass {
-    @apply bg-white/5 backdrop-blur-sm border border-white/10 rounded-none;
+    @apply bg-white/40 backdrop-blur-md border border-black/5 rounded-none shadow-sm;
   }
 
   .input-field {
-    @apply w-full bg-white/5 border border-white/20 text-white placeholder-white/30
+    @apply w-full bg-white border border-black/10 text-night placeholder-black/30
            px-4 py-3 rounded-none focus:outline-none focus:border-sand-500 
            transition-colors duration-200 font-body text-sm;
   }
-
-  .night { color: var(--night); }
-  .text-night { color: var(--night); }
 }
 
 @layer utilities {
   .text-gradient {
-    background: linear-gradient(135deg, #e8c070, #c98228, #dda04a);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-[#c98228] via-[#e8c070] to-[#dda04a];
   }
 
   .grain-overlay::after {

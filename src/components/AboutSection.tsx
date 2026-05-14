@@ -31,7 +31,7 @@ const team = [
 
 export function AboutSection() {
   return (
-    <section id="sobre" className="py-32 px-6 bg-[#0f0e0a] relative overflow-hidden">
+    <section id="sobre" className="py-32 px-6 bg-white relative overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#c98228]/40 to-transparent" />
 
       {/* Background decoration */}
@@ -47,9 +47,9 @@ export function AboutSection() {
               Nativos do<br />
               <span className="text-gradient">Tocantins</span>
             </h2>
-            <div className="space-y-4 font-body text-white/50 leading-relaxed">
+            <div className="space-y-4 font-body text-night/50 leading-relaxed">
               <p>
-                A <strong className="text-white">Jalapão Selvagem</strong> nasceu do amor de um grupo de
+                A <strong className="text-night">Jalapão Selvagem</strong> nasceu do amor de um grupo de
                 aventureiros tocantinenses pelo seu próprio estado. Fundada em 2016, nossa missão sempre
                 foi uma só: mostrar ao Brasil e ao mundo as maravilhas do Jalapão de forma autêntica,
                 segura e sustentável.
@@ -77,7 +77,7 @@ export function AboutSection() {
                 backgroundPosition: 'center',
               }}
             />
-            <div className="absolute -bottom-6 -left-6 w-48 h-48 border-4 border-[#0f0e0a]"
+            <div className="absolute -bottom-6 -left-6 w-48 h-48 border-4 border-white"
               style={{
                 backgroundImage: `url('https://images.unsplash.com/photo-1532274402911-5a369e4c4bb5?w=300&q=80')`,
                 backgroundSize: 'cover',
@@ -85,7 +85,7 @@ export function AboutSection() {
               }}
             />
             <div className="absolute -top-4 -right-4 font-mono text-xs text-right p-4 
-                            bg-[#c98228] text-[#0f0e0a]">
+                            bg-[#c98228] text-white">
               <div className="text-3xl font-black font-display">8</div>
               <div className="uppercase tracking-widest text-[10px]">Anos de</div>
               <div className="uppercase tracking-widest text-[10px]">Experiência</div>
@@ -96,17 +96,17 @@ export function AboutSection() {
         {/* Values */}
         <div className="mb-24">
           <p className="section-label text-center mb-4">✦ Nossos Valores</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-white/10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-black/5">
             {values.map(({ icon: Icon, title, description }) => (
               <div key={title}
-                className="bg-[#0f0e0a] p-8 group hover:bg-[#1a1710] transition-colors duration-300">
+                className="bg-white p-8 group hover:bg-sand-50 transition-colors duration-300">
                 <div className="w-10 h-10 border border-[#c98228]/40 flex items-center justify-center 
                                 mb-6 group-hover:border-[#c98228] group-hover:bg-[#c98228]/10 
                                 transition-all duration-300">
                   <Icon size={18} className="text-[#c98228]" />
                 </div>
-                <h3 className="font-display font-bold text-white text-lg mb-3">{title}</h3>
-                <p className="font-body text-white/40 text-sm leading-relaxed">{description}</p>
+                <h3 className="font-display font-bold text-night text-lg mb-3">{title}</h3>
+                <p className="font-body text-night/40 text-sm leading-relaxed">{description}</p>
               </div>
             ))}
           </div>
@@ -121,14 +121,14 @@ export function AboutSection() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {team.map(member => (
               <div key={member.name}
-                className="border border-white/10 p-6 hover:border-[#c98228]/40 transition-all duration-300">
+                className="border border-black/10 p-6 hover:border-[#c98228]/40 transition-all duration-300">
                 <div className="w-16 h-16 bg-gradient-to-br from-[#c98228] to-[#e8c070] mb-4
-                                flex items-center justify-center font-display text-2xl font-black text-[#0f0e0a]">
+                                flex items-center justify-center font-display text-2xl font-black text-white">
                   {member.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
                 </div>
-                <h4 className="font-display font-bold text-white text-lg">{member.name}</h4>
+                <h4 className="font-display font-bold text-night text-lg">{member.name}</h4>
                 <p className="font-body text-[#c98228] text-sm mb-1">{member.role}</p>
-                <p className="font-mono text-white/30 text-xs uppercase tracking-widest">{member.years}</p>
+                <p className="font-mono text-night/30 text-xs uppercase tracking-widest">{member.years}</p>
               </div>
             ))}
           </div>

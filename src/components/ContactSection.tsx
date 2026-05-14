@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 export function ContactSection() {
   return (
-    <section id="contato" className="py-32 px-6 bg-[#0d0c09] relative">
+    <section id="contato" className="py-32 px-6 bg-dusk relative">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#c98228]/40 to-transparent" />
 
       <div className="max-w-7xl mx-auto">
@@ -15,7 +15,7 @@ export function ContactSection() {
               Pronto para a<br />
               <span className="text-gradient">aventura?</span>
             </h2>
-            <p className="font-body text-white/50 leading-relaxed mb-10">
+            <p className="font-body text-night/50 leading-relaxed mb-10">
               Entre em contato com nossa equipe. Respondemos em até 2 horas 
               no horário comercial. Para urgências, use nosso WhatsApp.
             </p>
@@ -60,10 +60,10 @@ export function ContactSection() {
                     <Icon size={16} className="text-[#c98228]" />
                   </div>
                   <div>
-                    <p className="font-mono text-[10px] uppercase tracking-widest text-white/30 mb-0.5">
+                    <p className="font-mono text-[10px] uppercase tracking-widest text-night/30 mb-0.5">
                       {label}
                     </p>
-                    <p className="font-body text-white/70 group-hover:text-white transition-colors">
+                    <p className="font-body text-night/70 group-hover:text-night transition-colors">
                       {value}
                     </p>
                   </div>
@@ -81,8 +81,8 @@ export function ContactSection() {
                   key={label}
                   href={href}
                   aria-label={label}
-                  className="w-10 h-10 border border-white/20 flex items-center justify-center
-                             text-white/40 hover:border-[#c98228] hover:text-[#c98228] 
+                  className="w-10 h-10 border border-black/20 flex items-center justify-center
+                             text-night/40 hover:border-[#c98228] hover:text-[#c98228] 
                              transition-all duration-300"
                 >
                   <Icon size={16} />
@@ -92,7 +92,7 @@ export function ContactSection() {
           </div>
 
           {/* Right: Quick contact form */}
-          <div className="border border-white/10 p-8">
+          <div className="border border-black/10 p-8">
             <p className="font-mono text-[10px] uppercase tracking-widest text-[#c98228] mb-6">
               Envie uma Mensagem
             </p>
@@ -122,7 +122,7 @@ export function ContactSection() {
               <button className="btn-primary w-full">
                 Enviar Mensagem
               </button>
-              <p className="font-mono text-[10px] text-white/20 text-center tracking-widest">
+              <p className="font-mono text-[10px] text-night/20 text-center tracking-widest">
                 Para reservas, use o botão "Reservar" nas viagens acima.
               </p>
             </div>
@@ -135,7 +135,7 @@ export function ContactSection() {
 
 export function Footer() {
   return (
-    <footer className="bg-[#080807] border-t border-white/10 py-12 px-6">
+    <footer className="bg-white border-t border-black/10 py-12 px-6">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Logo */}
@@ -144,7 +144,7 @@ export function Footer() {
               <Compass size={14} className="text-[#c98228]" />
             </div>
             <div className="font-display">
-              <span className="text-white font-semibold">Jalapão</span>
+              <span className="text-night font-semibold">Jalapão</span>
               <span className="text-[#c98228] font-light ml-1">Selvagem</span>
             </div>
           </div>
@@ -155,7 +155,7 @@ export function Footer() {
               <button
                 key={item}
                 onClick={() => document.getElementById(item.toLowerCase())?.scrollIntoView({ behavior: 'smooth' })}
-                className="font-body text-white/30 hover:text-white/60 text-xs uppercase 
+                className="font-body text-night/30 hover:text-night/60 text-xs uppercase 
                            tracking-widest transition-colors"
               >
                 {item}
@@ -166,19 +166,19 @@ export function Footer() {
           {/* Admin link */}
           <Link
             to="/admin/login"
-            className="font-mono text-[10px] text-white/20 hover:text-white/40 
+            className="font-mono text-[10px] text-night/20 hover:text-night/40 
                        uppercase tracking-widest transition-colors"
           >
             Área Admin
           </Link>
         </div>
 
-        <div className="mt-8 pt-8 border-t border-white/5 flex flex-col md:flex-row 
+        <div className="mt-8 pt-8 border-t border-black/5 flex flex-col md:flex-row 
                         justify-between gap-2 text-center md:text-left">
-          <p className="font-mono text-[10px] text-white/20 uppercase tracking-widest">
+          <p className="font-mono text-[10px] text-night/20 uppercase tracking-widest">
             © 2024 Jalapão Selvagem Turismo. Todos os direitos reservados.
           </p>
-          <p className="font-mono text-[10px] text-white/20 uppercase tracking-widest">
+          <p className="font-mono text-[10px] text-night/20 uppercase tracking-widest">
             Palmas, Tocantins — Brasil
           </p>
         </div>

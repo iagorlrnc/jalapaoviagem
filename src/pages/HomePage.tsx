@@ -8,7 +8,7 @@ import { FloatingWhatsApp } from '../components/FloatingWhatsApp'
 
 export function HomePage() {
   return (
-    <div className="min-h-screen bg-[#0f0e0a]">
+    <div className="min-h-screen bg-night">
       <Navbar />
       <HeroSection />
       <DestinationsSection />

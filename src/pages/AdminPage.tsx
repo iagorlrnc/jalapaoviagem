@@ -14,17 +14,17 @@ const statusConfig = {
   pendente: {
     label: 'Pendente',
     icon: Clock,
-    classes: 'text-yellow-400 bg-yellow-400/10 border-yellow-400/30',
+    classes: 'text-amber-600 bg-amber-50 border-amber-200',
   },
   confirmada: {
     label: 'Confirmada',
     icon: CheckCircle,
-    classes: 'text-emerald-400 bg-emerald-400/10 border-emerald-400/30',
+    classes: 'text-emerald-600 bg-emerald-50 border-emerald-200',
   },
   cancelada: {
     label: 'Cancelada',
     icon: XCircle,
-    classes: 'text-red-400 bg-red-400/10 border-red-400/30',
+    classes: 'text-red-600 bg-red-50 border-red-200',
   },
 }
 
@@ -103,16 +103,16 @@ export function AdminPage() {
   })
 
   return (
-    <div className="min-h-screen bg-[#0d0c09] flex flex-col">
+    <div className="min-h-screen bg-dusk flex flex-col">
       {/* Top Bar */}
-      <header className="bg-[#0f0e0a] border-b border-white/10 px-6 py-4 flex items-center justify-between">
+      <header className="bg-white border-b border-black/10 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 border border-[#c98228] flex items-center justify-center">
             <Compass size={15} className="text-[#c98228]" />
           </div>
           <div>
-            <span className="font-display text-white font-semibold">Jalapão Selvagem</span>
-            <span className="font-mono text-[10px] text-white/30 uppercase tracking-widest ml-3">
+            <span className="font-display text-night font-semibold">Jalapão Selvagem</span>
+            <span className="font-mono text-[10px] text-night/30 uppercase tracking-widest ml-3">
               Painel Admin
             </span>
           </div>
@@ -120,21 +120,21 @@ export function AdminPage() {
         <div className="flex items-center gap-4">
           <button
             onClick={loadReservations}
-            className="text-white/40 hover:text-white/70 transition-colors p-2"
+            className="text-night/40 hover:text-night/70 transition-colors p-2"
             title="Atualizar"
           >
             <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
           </button>
           <button
             onClick={() => navigate('/')}
-            className="font-mono text-[10px] uppercase tracking-widest text-white/30 
-                       hover:text-white/60 transition-colors hidden md:block"
+            className="font-mono text-[10px] uppercase tracking-widest text-night/30 
+                       hover:text-night/60 transition-colors hidden md:block"
           >
             Ver Site
           </button>
           <button
             onClick={handleLogout}
-            className="flex items-center gap-2 text-white/40 hover:text-red-400 
+            className="flex items-center gap-2 text-night/40 hover:text-red-500 
                        transition-colors font-mono text-xs uppercase tracking-widest"
           >
             <LogOut size={14} />
@@ -147,20 +147,20 @@ export function AdminPage() {
         {/* Stats Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {[
-            { icon: DollarSign, label: 'Receita Confirmada', value: formatPrice(totalRevenue), color: 'text-emerald-400' },
+            { icon: DollarSign, label: 'Receita Confirmada', value: formatPrice(totalRevenue), color: 'text-emerald-600' },
             { icon: Calendar, label: 'Total de Reservas', value: reservations.length.toString(), color: 'text-[#c98228]' },
-            { icon: Clock, label: 'Aguardando Confirmação', value: pending.toString(), color: 'text-yellow-400' },
-            { icon: Users, label: 'Viajantes (ativos)', value: totalPeople.toString(), color: 'text-sky-400' },
+            { icon: Clock, label: 'Aguardando Confirmação', value: pending.toString(), color: 'text-amber-600' },
+            { icon: Users, label: 'Viajantes (ativos)', value: totalPeople.toString(), color: 'text-sky-600' },
           ].map(({ icon: Icon, label, value, color }) => (
             <div key={label}
-              className="bg-[#0f0e0a] border border-white/10 p-5 hover:border-white/20 
-                         transition-colors duration-200">
+              className="bg-white border border-black/10 p-5 hover:border-black/20 
+                         transition-colors duration-200 shadow-sm">
               <div className="flex items-start justify-between mb-4">
                 <Icon size={18} className={color} />
-                <TrendingUp size={12} className="text-white/20" />
+                <TrendingUp size={12} className="text-night/10" />
               </div>
               <div className={`font-display text-2xl font-bold mb-1 ${color}`}>{value}</div>
-              <div className="font-mono text-[10px] uppercase tracking-widest text-white/30">{label}</div>
+              <div className="font-mono text-[10px] uppercase tracking-widest text-night/30">{label}</div>
             </div>
           ))}
         </div>
@@ -168,11 +168,11 @@ export function AdminPage() {
         {/* Main content */}
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Table */}
-          <div className="flex-1 bg-[#0f0e0a] border border-white/10">
+          <div className="flex-1 bg-white border border-black/10 shadow-sm">
             {/* Table header */}
-            <div className="flex flex-col md:flex-row gap-4 p-5 border-b border-white/10">
+            <div className="flex flex-col md:flex-row gap-4 p-5 border-b border-black/10">
               <div className="relative flex-1">
-                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
+                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-night/30" />
                 <input
                   type="text"
                   value={searchQuery}
@@ -189,8 +189,8 @@ export function AdminPage() {
                     className={`font-mono text-[10px] uppercase tracking-widest px-3 py-2 
                                 border transition-all duration-200 whitespace-nowrap
                                 ${statusFilter === s
-                                  ? 'bg-[#c98228] text-[#0f0e0a] border-[#c98228] font-bold'
-                                  : 'border-white/20 text-white/40 hover:border-white/40'
+                                  ? 'bg-[#c98228] text-white border-[#c98228] font-bold'
+                                  : 'border-black/10 text-night/40 hover:border-black/30'
                                 }`}
                   >
                     {s === 'todos' ? 'Todos' : statusConfig[s].label}
@@ -202,12 +202,12 @@ export function AdminPage() {
             {/* Table */}
             <div className="overflow-x-auto">
               {loading ? (
-                <div className="flex items-center justify-center py-24 text-white/40 gap-3">
+                <div className="flex items-center justify-center py-24 text-night/40 gap-3">
                   <RefreshCw size={20} className="animate-spin text-[#c98228]" />
                   <span className="font-body">Carregando reservas...</span>
                 </div>
               ) : filtered.length === 0 ? (
-                <div className="text-center py-24 text-white/30 font-body">
+                <div className="text-center py-24 text-night/30 font-body">
                   {reservations.length === 0
                     ? 'Nenhuma reserva encontrada. As reservas feitas no site aparecerão aqui.'
                     : 'Nenhuma reserva encontrada com os filtros selecionados.'}
@@ -215,10 +215,10 @@ export function AdminPage() {
               ) : (
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-white/10">
+                    <tr className="border-b border-black/10">
                       {['Cliente', 'Viagem', 'Partida', 'Pessoas', 'Total', 'Status', 'Ações'].map(h => (
                         <th key={h}
-                          className="font-mono text-[10px] uppercase tracking-widest text-white/30 
+                          className="font-mono text-[10px] uppercase tracking-widest text-night/30 
                                      text-left px-4 py-3 whitespace-nowrap">
                           {h}
                         </th>
@@ -233,25 +233,25 @@ export function AdminPage() {
                       return (
                         <tr
                           key={r.id}
-                          className={`border-b border-white/5 hover:bg-white/3 transition-colors
-                                      ${selectedReservation?.id === r.id ? 'bg-white/5' : ''}`}
+                          className={`border-b border-black/5 hover:bg-black/2 transition-colors
+                                      ${selectedReservation?.id === r.id ? 'bg-sand-50' : ''}`}
                         >
                           <td className="px-4 py-4">
-                            <div className="font-body text-white text-sm font-medium">
+                            <div className="font-body text-night text-sm font-medium">
                               {r.client_name}
                             </div>
-                            <div className="font-mono text-[10px] text-white/30">{r.client_email}</div>
+                            <div className="font-mono text-[10px] text-night/30">{r.client_email}</div>
                           </td>
                           <td className="px-4 py-4">
-                            <div className="font-body text-white/70 text-sm">{r.trip_name}</div>
+                            <div className="font-body text-night/70 text-sm">{r.trip_name}</div>
                           </td>
                           <td className="px-4 py-4">
-                            <span className="font-mono text-xs text-white/50">
+                            <span className="font-mono text-xs text-night/50">
                               {formatDate(r.departure_date)}
                             </span>
                           </td>
                           <td className="px-4 py-4 text-center">
-                            <span className="font-mono text-sm text-white/70">{r.num_people}</span>
+                            <span className="font-mono text-sm text-night/70">{r.num_people}</span>
                           </td>
                           <td className="px-4 py-4">
                             <span className="font-display text-sm font-bold text-gradient">
@@ -270,7 +270,7 @@ export function AdminPage() {
                             <div className="flex items-center gap-2">
                               <button
                                 onClick={() => setSelectedReservation(r)}
-                                className="text-white/30 hover:text-[#c98228] transition-colors p-1"
+                                className="text-night/30 hover:text-[#c98228] transition-colors p-1"
                                 title="Ver detalhes"
                               >
                                 <Eye size={14} />
@@ -281,22 +281,22 @@ export function AdminPage() {
                                 )}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-white/30 hover:text-emerald-400 transition-colors p-1"
+                                className="text-night/30 hover:text-emerald-600 transition-colors p-1"
                                 title="Enviar mensagem"
                               >
                                 <MessageCircle size={14} />
                               </a>
                               <div className="relative group">
                                 <button
-                                  className="text-white/30 hover:text-white/60 transition-colors 
+                                  className="text-night/30 hover:text-night/60 transition-colors 
                                              p-1 flex items-center gap-0.5"
                                   disabled={isUpdating}
                                 >
                                   <ChevronDown size={14} />
                                 </button>
                                 {/* Dropdown */}
-                                <div className="absolute right-0 top-full mt-1 w-40 bg-[#1a1a12] 
-                                                border border-white/20 z-20 hidden group-hover:block shadow-xl">
+                                <div className="absolute right-0 top-full mt-1 w-40 bg-white 
+                                                border border-black/10 z-20 hidden group-hover:block shadow-xl">
                                   {(['pendente', 'confirmada', 'cancelada'] as const)
                                     .filter(s => s !== r.status)
                                     .map(s => {
@@ -309,7 +309,7 @@ export function AdminPage() {
                                           disabled={isUpdating}
                                           className={`w-full flex items-center gap-2 px-4 py-3
                                                       font-mono text-[10px] uppercase tracking-widest
-                                                      hover:bg-white/5 transition-colors text-left
+                                                      hover:bg-black/5 transition-colors text-left
                                                       ${SC.classes}`}
                                         >
                                           {isUpdating ? <Loader2 size={10} className="animate-spin" /> : <SI size={10} />}
@@ -317,12 +317,12 @@ export function AdminPage() {
                                         </button>
                                       )
                                     })}
-                                  <div className="border-t border-white/10">
+                                  <div className="border-t border-black/5">
                                     <button
                                       onClick={() => handleDelete(r.id)}
                                       className="w-full flex items-center gap-2 px-4 py-3
                                                  font-mono text-[10px] uppercase tracking-widest
-                                                 text-red-400 hover:bg-red-900/20 transition-colors text-left"
+                                                 text-red-600 hover:bg-red-50 transition-colors text-left"
                                     >
                                       <Trash2 size={10} />
                                       Excluir
@@ -342,11 +342,11 @@ export function AdminPage() {
 
             {/* Table footer */}
             {filtered.length > 0 && (
-              <div className="px-4 py-3 border-t border-white/5 flex justify-between">
-                <span className="font-mono text-[10px] text-white/30 uppercase tracking-widest">
+              <div className="px-4 py-3 border-t border-black/5 flex justify-between">
+                <span className="font-mono text-[10px] text-night/30 uppercase tracking-widest">
                   {filtered.length} reserva{filtered.length !== 1 ? 's' : ''} exibida{filtered.length !== 1 ? 's' : ''}
                 </span>
-                <span className="font-mono text-[10px] text-white/30 uppercase tracking-widest">
+                <span className="font-mono text-[10px] text-night/30 uppercase tracking-widest">
                   Total: {formatPrice(filtered.reduce((s, r) => s + r.total_price, 0))}
                 </span>
               </div>
@@ -355,14 +355,14 @@ export function AdminPage() {
 
           {/* Detail Panel */}
           {selectedReservation && (
-            <div className="w-full lg:w-80 bg-[#0f0e0a] border border-white/10 p-6 self-start">
+            <div className="w-full lg:w-80 bg-white border border-black/10 p-6 self-start shadow-xl">
               <div className="flex items-center justify-between mb-6">
                 <p className="font-mono text-[10px] uppercase tracking-widest text-[#c98228]">
                   Detalhes
                 </p>
                 <button
                   onClick={() => setSelectedReservation(null)}
-                  className="text-white/30 hover:text-white/60 transition-colors"
+                  className="text-night/30 hover:text-night/60 transition-colors"
                 >
                   ✕
                 </button>
@@ -371,7 +371,7 @@ export function AdminPage() {
               <div className="space-y-5">
                 {/* Status */}
                 <div>
-                  <p className="font-mono text-[10px] uppercase tracking-widest text-white/30 mb-2">
+                  <p className="font-mono text-[10px] uppercase tracking-widest text-night/30 mb-2">
                     Status
                   </p>
                   <div className={`inline-flex items-center gap-2 px-3 py-2 border
@@ -387,7 +387,7 @@ export function AdminPage() {
 
                 {/* Client */}
                 <div className="space-y-3">
-                  <p className="font-mono text-[10px] uppercase tracking-widest text-white/30">
+                  <p className="font-mono text-[10px] uppercase tracking-widest text-night/30">
                     Cliente
                   </p>
                   {[
@@ -398,10 +398,10 @@ export function AdminPage() {
                   ].map(({ label, value }) => (
                       <div className="flex items-center justify-between group/copy">
                         <div>
-                          <span className="font-mono text-[9px] text-white/20 uppercase tracking-widest">
+                          <span className="font-mono text-[9px] text-night/20 uppercase tracking-widest">
                             {label}
                           </span>
-                          <div className="font-body text-white/70 text-sm mt-0.5">{value}</div>
+                          <div className="font-body text-night/70 text-sm mt-0.5">{value}</div>
                         </div>
                         <button
                           onClick={() => {
@@ -418,8 +418,8 @@ export function AdminPage() {
                 </div>
 
                 {/* Trip */}
-                <div className="space-y-3 pt-4 border-t border-white/10">
-                  <p className="font-mono text-[10px] uppercase tracking-widest text-white/30">
+                <div className="space-y-3 pt-4 border-t border-black/10">
+                  <p className="font-mono text-[10px] uppercase tracking-widest text-night/30">
                     Viagem
                   </p>
                   {[
@@ -429,10 +429,10 @@ export function AdminPage() {
                     { label: 'Total', value: formatPrice(selectedReservation.total_price) },
                   ].map(({ label, value }) => (
                     <div key={label}>
-                      <span className="font-mono text-[9px] text-white/20 uppercase tracking-widest">
+                      <span className="font-mono text-[9px] text-night/20 uppercase tracking-widest">
                         {label}
                       </span>
-                      <div className={`font-body text-sm mt-0.5 ${label === 'Total' ? 'text-gradient font-bold font-display text-base' : 'text-white/70'}`}>
+                      <div className={`font-body text-sm mt-0.5 ${label === 'Total' ? 'text-gradient font-bold font-display text-base' : 'text-night/70'}`}>
                         {value}
                       </div>
                     </div>
@@ -441,28 +441,28 @@ export function AdminPage() {
 
                 {/* Notes */}
                 {selectedReservation.notes && (
-                  <div className="pt-4 border-t border-white/10">
-                    <p className="font-mono text-[10px] uppercase tracking-widest text-white/30 mb-2">
+                  <div className="pt-4 border-t border-black/10">
+                    <p className="font-mono text-[10px] uppercase tracking-widest text-night/30 mb-2">
                       Observações
                     </p>
-                    <p className="font-body text-white/50 text-sm leading-relaxed">
+                    <p className="font-body text-night/50 text-sm leading-relaxed">
                       {selectedReservation.notes}
                     </p>
                   </div>
                 )}
 
                 {/* Created at */}
-                <div className="pt-4 border-t border-white/10">
-                  <p className="font-mono text-[9px] uppercase tracking-widest text-white/20">
+                <div className="pt-4 border-t border-black/10">
+                  <p className="font-mono text-[9px] uppercase tracking-widest text-night/20">
                     Reserva criada em
                   </p>
-                  <p className="font-mono text-xs text-white/30 mt-1">
+                  <p className="font-mono text-xs text-night/30 mt-1">
                     {formatDate(selectedReservation.created_at)}
                   </p>
                 </div>
 
                 {/* Actions */}
-                <div className="pt-4 border-t border-white/10 space-y-2">
+                <div className="pt-4 border-t border-black/10 space-y-2">
                   {(['confirmada', 'pendente', 'cancelada'] as const)
                     .filter(s => s !== selectedReservation.status)
                     .map(s => {
@@ -487,8 +487,8 @@ export function AdminPage() {
                     onClick={() => handleDelete(selectedReservation.id)}
                     className="w-full flex items-center justify-center gap-2 py-3
                                font-mono text-[10px] uppercase tracking-widest border
-                               text-red-400 border-red-400/30 bg-red-400/5
-                               hover:bg-red-400/10 transition-colors"
+                               text-red-600 border-red-200 bg-red-50
+                               hover:bg-red-100 transition-colors"
                   >
                     <Trash2 size={12} />
                     Excluir Reserva

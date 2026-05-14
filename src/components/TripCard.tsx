@@ -34,8 +34,8 @@ export function TripCard({ trip }: TripCardProps) {
 
   return (
     <>
-      <div className="group relative flex flex-col border border-white/10 hover:border-[#c98228]/50 
-                      transition-all duration-500 overflow-hidden bg-[#0f0e0a]">
+      <div className="group relative flex flex-col border border-black/10 hover:border-[#c98228]/50 
+                      transition-all duration-500 overflow-hidden bg-white shadow-sm">
         {/* Image */}
         <div className="relative overflow-hidden" style={{ height: '220px' }}>
           <div
@@ -46,7 +46,7 @@ export function TripCard({ trip }: TripCardProps) {
               backgroundPosition: 'center',
             }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0f0e0a] via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
 
           {/* Badges */}
           <div className="absolute top-4 left-4 flex flex-col gap-2 z-10">
@@ -70,18 +70,18 @@ export function TripCard({ trip }: TripCardProps) {
 
           {/* Price badge */}
           <div className="absolute bottom-4 right-4 z-10 text-right">
-            <div className="font-body text-white/40 text-xs">a partir de</div>
+            <div className="font-body text-white/60 text-xs uppercase tracking-widest">a partir de</div>
             <div className="font-display text-2xl font-bold text-gradient">
               {formatPrice(trip.price)}
             </div>
-            <div className="font-body text-white/40 text-xs">por pessoa</div>
+            <div className="font-body text-white/60 text-xs uppercase tracking-widest">por pessoa</div>
           </div>
         </div>
 
         {/* Content */}
         <div className="flex flex-col flex-1 p-6">
           <div className="flex items-start justify-between mb-3">
-            <h3 className="font-display text-xl font-bold text-white group-hover:text-[#e8c070] 
+            <h3 className="font-display text-xl font-bold text-night group-hover:text-[#c98228] 
                            transition-colors duration-300">
               {trip.name}
             </h3>
@@ -92,21 +92,21 @@ export function TripCard({ trip }: TripCardProps) {
             </div>
           </div>
 
-          <p className="font-body text-white/50 text-sm leading-relaxed mb-4 line-clamp-2">
+          <p className="font-body text-night/60 text-sm leading-relaxed mb-4 line-clamp-2">
             {trip.description}
           </p>
 
           {/* Meta info */}
           <div className="grid grid-cols-2 gap-3 mb-4">
-            <div className="flex items-center gap-2 text-white/40">
+            <div className="flex items-center gap-2 text-night/50">
               <Calendar size={13} className="text-[#c98228] flex-shrink-0" />
               <span className="font-mono text-xs">{formatDate(trip.departure_date)}</span>
             </div>
-            <div className="flex items-center gap-2 text-white/40">
+            <div className="flex items-center gap-2 text-night/50">
               <Clock size={13} className="text-[#c98228] flex-shrink-0" />
               <span className="font-mono text-xs">{trip.duration_days} dias</span>
             </div>
-            <div className="flex items-center gap-2 text-white/40 col-span-2">
+            <div className="flex items-center gap-2 text-night/50 col-span-2">
               <Users size={13} className="text-[#c98228] flex-shrink-0" />
               <span className="font-mono text-xs">
                 {isSoldOut
@@ -118,17 +118,17 @@ export function TripCard({ trip }: TripCardProps) {
 
           {/* Spots bar */}
           <div className="mb-4">
-            <div className="h-1 bg-white/10 rounded-full overflow-hidden">
+            <div className="h-1 bg-black/5 rounded-full overflow-hidden">
               <div
                 className="h-full bg-gradient-to-r from-[#c98228] to-[#e8c070] transition-all duration-500"
                 style={{ width: `${((trip.max_spots - spotsLeft) / trip.max_spots) * 100}%` }}
               />
             </div>
             <div className="flex justify-between mt-1">
-              <span className="font-mono text-[10px] text-white/30">
+              <span className="font-mono text-[10px] text-night/30">
                 {trip.max_spots - spotsLeft}/{trip.max_spots} reservas
               </span>
-              <span className="font-mono text-[10px] text-white/30">
+              <span className="font-mono text-[10px] text-night/30">
                 {Math.round(((trip.max_spots - spotsLeft) / trip.max_spots) * 100)}% preenchido
               </span>
             </div>
@@ -148,7 +148,7 @@ export function TripCard({ trip }: TripCardProps) {
           </button>
 
           {showDetails && (
-            <div className="mb-4 space-y-4 border-t border-white/10 pt-4">
+            <div className="mb-4 space-y-4 border-t border-black/5 pt-4">
               {/* Highlights */}
               <div>
                 <p className="font-mono text-[10px] uppercase tracking-widest text-[#c98228] mb-2">
@@ -157,8 +157,8 @@ export function TripCard({ trip }: TripCardProps) {
                 <div className="flex flex-wrap gap-2">
                   {trip.highlights.map(h => (
                     <span key={h}
-                      className="font-body text-xs text-white/60 bg-white/5 
-                                 border border-white/10 px-2 py-1">
+                      className="font-body text-xs text-night/60 bg-black/5 
+                                 border border-black/5 px-2 py-1">
                       {h}
                     </span>
                   ))}
@@ -172,7 +172,7 @@ export function TripCard({ trip }: TripCardProps) {
                 </p>
                 <ul className="space-y-1">
                   {trip.includes.map(inc => (
-                    <li key={inc} className="flex items-center gap-2 font-body text-xs text-white/50">
+                    <li key={inc} className="flex items-center gap-2 font-body text-xs text-night/50">
                       <span className="w-1 h-1 bg-[#c98228] rounded-full flex-shrink-0" />
                       {inc}
                     </li>
@@ -180,7 +180,7 @@ export function TripCard({ trip }: TripCardProps) {
                 </ul>
               </div>
 
-              <div className="flex justify-between font-mono text-xs text-white/30">
+              <div className="flex justify-between font-mono text-xs text-night/30">
                 <span>Retorno: {formatDate(trip.return_date)}</span>
                 <span>{trip.location}</span>
               </div>
@@ -194,7 +194,7 @@ export function TripCard({ trip }: TripCardProps) {
             className={`mt-auto w-full py-4 font-bold uppercase tracking-widest text-xs
                         transition-all duration-300 relative overflow-hidden
                         ${isSoldOut
-                          ? 'bg-white/5 text-white/30 cursor-not-allowed border border-white/10'
+                          ? 'bg-black/5 text-night/30 cursor-not-allowed border border-black/5'
                           : 'btn-primary'
                         }`}
           >

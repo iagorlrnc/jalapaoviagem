@@ -31,7 +31,7 @@ export function AdminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0f0e0a] flex items-center justify-center px-6 relative overflow-hidden">
+    <div className="min-h-screen bg-night flex items-center justify-center px-6 relative overflow-hidden">
       {/* Background */}
       <div
         className="absolute inset-0 opacity-20"
@@ -41,7 +41,7 @@ export function AdminLoginPage() {
           backgroundPosition: 'center',
         }}
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0f0e0a] via-[#0f0e0a]/90 to-[#0f0e0a]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-white via-white/90 to-white" />
 
       {/* Grid decoration */}
       <div className="absolute inset-0 opacity-5"
@@ -63,24 +63,24 @@ export function AdminLoginPage() {
           </div>
           <div className="font-display text-center">
             <div>
-              <span className="text-white text-xl font-semibold">Jalapão</span>
+              <span className="text-night text-xl font-semibold">Jalapão</span>
               <span className="text-[#c98228] text-xl font-light ml-1">Selvagem</span>
             </div>
-            <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-white/30 mt-0.5">
+            <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-night/30 mt-0.5">
               Painel Administrativo
             </div>
           </div>
         </div>
 
         {/* Form */}
-        <div className="border border-white/10 bg-[#0f0e0a]/80 backdrop-blur-sm p-8">
+        <div className="border border-black/10 bg-white/80 backdrop-blur-sm p-8">
           <p className="font-mono text-[10px] uppercase tracking-widest text-[#c98228] mb-6">
             Acesso Restrito
           </p>
 
           <div className="space-y-4">
             <div>
-              <label className="font-mono text-[10px] uppercase tracking-widest text-white/40 block mb-2">
+              <label className="font-mono text-[10px] uppercase tracking-widest text-night/40 block mb-2">
                 Senha de Administrador
               </label>
               <div className="relative">
@@ -95,8 +95,8 @@ export function AdminLoginPage() {
                 />
                 <button
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 
-                             hover:text-white/60 transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-night/30 
+                             hover:text-night/60 transition-colors"
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
@@ -117,7 +117,7 @@ export function AdminLoginPage() {
               className={`w-full py-4 font-bold uppercase tracking-widest text-xs
                           transition-all duration-300
                           ${loading || !password
-                            ? 'bg-white/5 text-white/30 cursor-not-allowed border border-white/10'
+                            ? 'bg-black/5 text-night/30 cursor-not-allowed border border-black/10'
                             : 'btn-primary'
                           }`}
             >
@@ -125,8 +125,8 @@ export function AdminLoginPage() {
             </button>
           </div>
 
-          <div className="mt-6 pt-6 border-t border-white/5">
-            <p className="font-mono text-[10px] text-white/20 text-center uppercase tracking-widest">
+          <div className="mt-6 pt-6 border-t border-black/5">
+            <p className="font-mono text-[10px] text-night/20 text-center uppercase tracking-widest">
               Apenas administradores autorizados
             </p>
           </div>
@@ -136,7 +136,7 @@ export function AdminLoginPage() {
         <div className="text-center mt-6">
           <button
             onClick={() => navigate('/')}
-            className="font-mono text-[10px] text-white/30 hover:text-white/50 
+            className="font-mono text-[10px] text-night/30 hover:text-night/50 
                        uppercase tracking-widest transition-colors"
           >
             ← Voltar ao Site

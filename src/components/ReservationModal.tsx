@@ -75,14 +75,14 @@ export function ReservationModal({ trip, onClose }: Props) {
       />
 
       {/* Modal */}
-      <div className="relative z-10 w-full max-w-2xl bg-[#0f0e0a] border border-white/20 
-                      overflow-y-auto max-h-[90vh]">
+      <div className="relative z-10 w-full max-w-2xl bg-white border border-black/10 
+                      overflow-y-auto max-h-[90vh] shadow-2xl">
         {/* Header */}
-        <div className="flex items-start justify-between p-6 border-b border-white/10">
+        <div className="flex items-start justify-between p-6 border-b border-black/5">
           <div>
             <p className="section-label mb-1">✦ Reserva de Viagem</p>
-            <h2 className="font-display text-2xl font-bold text-white">{trip.name}</h2>
-            <p className="font-mono text-xs text-white/40 mt-1">
+            <h2 className="font-display text-2xl font-bold text-night">{trip.name}</h2>
+            <p className="font-mono text-xs text-night/40 mt-1">
               {new Date(trip.departure_date + 'T00:00:00').toLocaleDateString('pt-BR', {
                 weekday: 'long', day: '2-digit', month: 'long', year: 'numeric',
               })}
@@ -90,7 +90,7 @@ export function ReservationModal({ trip, onClose }: Props) {
           </div>
           <button
             onClick={onClose}
-            className="text-white/40 hover:text-white transition-colors p-1"
+            className="text-night/40 hover:text-night transition-colors p-1"
           >
             <X size={22} />
           </button>
@@ -100,7 +100,7 @@ export function ReservationModal({ trip, onClose }: Props) {
           <div className="p-6 space-y-5">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="md:col-span-2">
-                <label className="font-mono text-[10px] uppercase tracking-widest text-white/40 block mb-2">
+                <label className="font-mono text-[10px] uppercase tracking-widest text-night/40 block mb-2">
                   Nome Completo *
                 </label>
                 <input
@@ -114,7 +114,7 @@ export function ReservationModal({ trip, onClose }: Props) {
               </div>
 
               <div>
-                <label className="font-mono text-[10px] uppercase tracking-widest text-white/40 block mb-2">
+                <label className="font-mono text-[10px] uppercase tracking-widest text-night/40 block mb-2">
                   E-mail *
                 </label>
                 <input
@@ -128,7 +128,7 @@ export function ReservationModal({ trip, onClose }: Props) {
               </div>
 
               <div>
-                <label className="font-mono text-[10px] uppercase tracking-widest text-white/40 block mb-2">
+                <label className="font-mono text-[10px] uppercase tracking-widest text-night/40 block mb-2">
                   Telefone / WhatsApp *
                 </label>
                 <input
@@ -142,7 +142,7 @@ export function ReservationModal({ trip, onClose }: Props) {
               </div>
 
               <div>
-                <label className="font-mono text-[10px] uppercase tracking-widest text-white/40 block mb-2">
+                <label className="font-mono text-[10px] uppercase tracking-widest text-night/40 block mb-2">
                   CPF *
                 </label>
                 <input
@@ -156,7 +156,7 @@ export function ReservationModal({ trip, onClose }: Props) {
               </div>
 
               <div>
-                <label className="font-mono text-[10px] uppercase tracking-widest text-white/40 block mb-2">
+                <label className="font-mono text-[10px] uppercase tracking-widest text-night/40 block mb-2">
                   Número de Pessoas *
                 </label>
                 <select
@@ -172,7 +172,7 @@ export function ReservationModal({ trip, onClose }: Props) {
               </div>
 
               <div className="md:col-span-2">
-                <label className="font-mono text-[10px] uppercase tracking-widest text-white/40 block mb-2">
+                <label className="font-mono text-[10px] uppercase tracking-widest text-night/40 block mb-2">
                   Observações (opcional)
                 </label>
                 <textarea
@@ -187,28 +187,28 @@ export function ReservationModal({ trip, onClose }: Props) {
             </div>
 
             {/* Price Summary */}
-            <div className="bg-white/5 border border-white/10 p-4 space-y-3">
+            <div className="bg-sand-50 border border-black/5 p-4 space-y-3">
               <p className="font-mono text-[10px] uppercase tracking-widest text-[#c98228]">
                 Resumo do Pedido
               </p>
-              <div className="flex justify-between font-body text-sm text-white/60">
+              <div className="flex justify-between font-body text-sm text-night/60">
                 <span>{form.num_people} × {trip.name}</span>
                 <span>{formatPrice(trip.price)} / pessoa</span>
               </div>
-              <div className="border-t border-white/10 pt-3 flex justify-between">
-                <span className="font-display font-bold text-white">Total</span>
+              <div className="border-t border-black/5 pt-3 flex justify-between">
+                <span className="font-display font-bold text-night">Total</span>
                 <span className="font-display text-xl font-bold text-gradient">
                   {formatPrice(totalPrice)}
                 </span>
               </div>
-              <p className="font-mono text-[10px] text-white/30">
+              <p className="font-mono text-[10px] text-night/30">
                 * O pagamento será confirmado via WhatsApp após a reserva.
               </p>
             </div>
 
             {errorMsg && (
-              <div className="flex items-center gap-2 text-red-400 bg-red-900/20 
-                              border border-red-500/30 p-3">
+              <div className="flex items-center gap-2 text-red-600 bg-red-50 
+                              border border-red-200 p-3">
                 <AlertCircle size={16} />
                 <span className="font-body text-sm">{errorMsg}</span>
               </div>
@@ -238,38 +238,38 @@ export function ReservationModal({ trip, onClose }: Props) {
 
         {step === 'success' && (
           <div className="p-12 flex flex-col items-center text-center gap-6">
-            <div className="w-16 h-16 border border-emerald-500/30 bg-emerald-500/10 
+            <div className="w-16 h-16 border border-emerald-200 bg-emerald-50 
                             flex items-center justify-center">
-              <CheckCircle size={32} className="text-emerald-400" />
+              <CheckCircle size={32} className="text-emerald-600" />
             </div>
             <div>
-              <h3 className="font-display text-2xl font-bold text-white mb-2">
+              <h3 className="font-display text-2xl font-bold text-night mb-2">
                 Reserva Enviada!
               </h3>
-              <p className="font-body text-white/50 text-sm leading-relaxed max-w-sm">
-                Sua solicitação para <strong className="text-white">{trip.name}</strong> foi recebida.
+              <p className="font-body text-night/50 text-sm leading-relaxed max-w-sm">
+                Sua solicitação para <strong className="text-night">{trip.name}</strong> foi recebida.
                 Nossa equipe entrará em contato via WhatsApp em até 24 horas para confirmar e 
                 finalizar o pagamento.
               </p>
             </div>
-            <div className="bg-white/5 border border-white/10 p-4 w-full text-left space-y-2">
+            <div className="bg-sand-50 border border-black/5 p-4 w-full text-left space-y-2">
               <p className="font-mono text-[10px] text-[#c98228] uppercase tracking-widest mb-3">
                 Detalhes da Reserva
               </p>
               <div className="flex justify-between font-body text-sm">
-                <span className="text-white/40">Nome</span>
-                <span className="text-white">{form.client_name}</span>
+                <span className="text-night/40">Nome</span>
+                <span className="text-night">{form.client_name}</span>
               </div>
               <div className="flex justify-between font-body text-sm">
-                <span className="text-white/40">Viagem</span>
-                <span className="text-white">{trip.name}</span>
+                <span className="text-night/40">Viagem</span>
+                <span className="text-night">{trip.name}</span>
               </div>
               <div className="flex justify-between font-body text-sm">
-                <span className="text-white/40">Pessoas</span>
-                <span className="text-white">{form.num_people}</span>
+                <span className="text-night/40">Pessoas</span>
+                <span className="text-night">{form.num_people}</span>
               </div>
               <div className="flex justify-between font-body text-sm">
-                <span className="text-white/40">Total</span>
+                <span className="text-night/40">Total</span>
                 <span className="text-gradient font-bold">{formatPrice(totalPrice)}</span>
               </div>
             </div>
@@ -281,13 +281,13 @@ export function ReservationModal({ trip, onClose }: Props) {
 
         {step === 'error' && (
           <div className="p-12 flex flex-col items-center text-center gap-6">
-            <div className="w-16 h-16 border border-red-500/30 bg-red-500/10 
+            <div className="w-16 h-16 border border-red-200 bg-red-50 
                             flex items-center justify-center">
-              <AlertCircle size={32} className="text-red-400" />
+              <AlertCircle size={32} className="text-red-600" />
             </div>
             <div>
-              <h3 className="font-display text-2xl font-bold text-white mb-2">Erro na Reserva</h3>
-              <p className="font-body text-white/50 text-sm">{errorMsg}</p>
+              <h3 className="font-display text-2xl font-bold text-night mb-2">Erro na Reserva</h3>
+              <p className="font-body text-night/50 text-sm">{errorMsg}</p>
             </div>
             <div className="flex gap-3">
               <button onClick={() => setStep('form')} className="btn-outline px-8">

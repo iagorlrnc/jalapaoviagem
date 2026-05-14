@@ -41,7 +41,9 @@ export default {
         },
         sky: {
           cerrado: '#0ea5e9',
-        }
+        },
+        night: '#1a1a0a',
+        dusk: '#fdfcfb',
       },
       backgroundImage: {
         'gradient-sand': 'linear-gradient(135deg, #c98228 0%, #e8c070 50%, #dda04a 100%)',

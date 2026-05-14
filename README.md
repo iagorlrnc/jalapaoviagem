@@ -1,11 +1,11 @@
-# 🌵 Jalapão Selvagem — Site de Turismo
+# Jalapão Selvagem — Site de Turismo
 
 Website completo para agência de turismo focada no Jalapão, Tocantins.  
 **Stack:** React + TypeScript + Vite + Tailwind CSS + Supabase
 
 ---
 
-## 📁 Estrutura do Projeto
+## Estrutura do Projeto
 
 ```
 jalapao-turismo/
@@ -37,7 +37,7 @@ jalapao-turismo/
 
 ---
 
-## 🚀 Como Rodar
+## Como Rodar
 
 ### 1. Instalar dependências
 ```bash
@@ -68,7 +68,7 @@ npm run build
 
 ---
 
-## 🗄️ Configurar Supabase
+## Configurar Supabase
 
 ### Criar projeto
 1. Acesse [supabase.com](https://supabase.com) e crie um novo projeto
@@ -84,21 +84,21 @@ No painel do Supabase: **Settings → API**
 
 ---
 
-## 🔐 Painel Administrativo
+## Painel Administrativo
 
 - **URL:** `/admin/login`
 - **Senha padrão:** `jalapao2024` (definida em `VITE_ADMIN_PASSWORD`)
 
 ### Funcionalidades do Admin:
-- 📊 Dashboard com estatísticas (receita, reservas, vagas)
-- 📋 Tabela completa de reservas com filtros e busca
-- 🔄 Atualizar status: Pendente → Confirmada → Cancelada
-- 👁️ Painel de detalhes do cliente
-- 🗑️ Excluir reservas
+-  Dashboard com estatísticas (receita, reservas, vagas)
+-  Tabela completa de reservas com filtros e busca
+-  Atualizar status: Pendente → Confirmada → Cancelada
+-  Painel de detalhes do cliente
+-  Excluir reservas
 
 ---
 
-## 🌐 Páginas e Seções
+## Páginas e Seções
 
 ### Site Principal (`/`)
 - **Hero** — Banner com parallax e estatísticas
@@ -116,7 +116,7 @@ No painel do Supabase: **Settings → API**
 
 ---
 
-## 🎨 Design
+## Design
 
 - **Tema:** Dark mode com tons terrosos (areia dourada + cerrado)
 - **Tipografia:** Playfair Display (display) + Lato (body) + DM Mono (labels)
@@ -125,7 +125,7 @@ No painel do Supabase: **Settings → API**
 
 ---
 
-## 📦 Deploy
+## Deploy
 
 ### Vercel (recomendado)
 ```bash
