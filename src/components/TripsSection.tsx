@@ -1,17 +1,19 @@
 import { useEffect, useState } from 'react'
 import { Loader2 } from 'lucide-react'
-import { Trip } from '../lib/supabase'
-import { getTrips } from '../lib/api'
+import { Trip, SiteSettings } from '../lib/supabase'
+import { getTrips, getSettings } from '../lib/api'
 import { TripCard } from './TripCard'
 
 export function TripsSection() {
   const [trips, setTrips] = useState<Trip[]>([])
+  const [settings, setSettings] = useState<SiteSettings | null>(null)
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<'Todos' | 'Fácil' | 'Moderado' | 'Difícil'>('Todos')
 
   useEffect(() => {
-    getTrips().then(data => {
-      setTrips(data)
+    Promise.all([getTrips(), getSettings()]).then(([tripData, settingsData]) => {
+      setTrips(tripData)
+      setSettings(settingsData)
       setLoading(false)
     })
   }, [])
@@ -82,7 +84,7 @@ export function TripsSection() {
             </p>
           </div>
           <a
-            href="https://wa.me/556399999999?text=Olá!%20Quero%20um%20roteiro%20personalizado%20para%20o%20Jalapão."
+            href={settings?.whatsapp ? `https://wa.me/${settings.whatsapp}` : '#'}
             target="_blank"
             rel="noopener noreferrer"
             className="btn-outline whitespace-nowrap"

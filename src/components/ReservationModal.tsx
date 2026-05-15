@@ -27,11 +27,33 @@ export function ReservationModal({ trip, onClose }: Props) {
 
   const totalPrice = trip.price * form.num_people
 
+  const maskCPF = (value: string) => {
+    return value
+      .replace(/\D/g, '')
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d{1,2})/, '$1-$2')
+      .replace(/(-\d{2})\d+?$/, '$1')
+  }
+
+  const maskPhone = (value: string) => {
+    return value
+      .replace(/\D/g, '')
+      .replace(/(\d{2})(\d)/, '($1) $2')
+      .replace(/(\d{5})(\d)/, '$1-$2')
+      .replace(/(-\d{4})\d+?$/, '$1')
+  }
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
+    
+    let formattedValue = value
+    if (name === 'client_cpf') formattedValue = maskCPF(value)
+    if (name === 'client_phone') formattedValue = maskPhone(value)
+
     setForm(prev => ({
       ...prev,
-      [name]: name === 'num_people' ? parseInt(value) : value,
+      [name]: name === 'num_people' ? parseInt(value) : formattedValue,
     }))
   }
 

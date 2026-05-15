@@ -18,8 +18,34 @@ export type Database = {
         Insert: Omit<Reservation, 'id' | 'created_at'>
         Update: Partial<Omit<Reservation, 'id' | 'created_at'>>
       }
+      destinations: {
+        Row: Destination
+        Insert: Omit<Destination, 'id' | 'created_at'>
+        Update: Partial<Omit<Destination, 'id' | 'created_at'>>
+      }
+      team_members: {
+        Row: TeamMember
+        Insert: Omit<TeamMember, 'id' | 'created_at'>
+        Update: Partial<Omit<TeamMember, 'id' | 'created_at'>>
+      }
+      site_settings: {
+        Row: SiteSettings
+        Insert: SiteSettings
+        Update: Partial<SiteSettings>
+      }
     }
   }
+}
+
+export interface SiteSettings {
+  id: string
+  whatsapp: string
+  email: string
+  address: string
+  working_hours: string
+  instagram_url: string
+  facebook_url: string
+  updated_at?: string
 }
 
 export interface Trip {
@@ -39,6 +65,28 @@ export interface Trip {
   difficulty: 'Fácil' | 'Moderado' | 'Difícil'
   includes: string[]
   is_active: boolean
+}
+
+export interface Destination {
+  id: string
+  created_at: string
+  name: string
+  description: string
+  tag: string
+  image_url: string
+  rating: number
+  is_active: boolean
+  order_index: number
+}
+
+export interface TeamMember {
+  id: string
+  created_at: string
+  name: string
+  role: string
+  years_experience: string
+  image_url?: string
+  order_index: number
 }
 
 export interface Reservation {

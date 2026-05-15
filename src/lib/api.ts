@@ -1,4 +1,4 @@
-import { supabase, Trip, Reservation } from './supabase'
+import { supabase, Trip, Reservation, Destination, TeamMember, SiteSettings } from './supabase'
 import { mockTrips } from './mockData'
 
 const isSupabaseConfigured = () => {
@@ -6,46 +6,155 @@ const isSupabaseConfigured = () => {
   return url && url !== 'https://your-project.supabase.co'
 }
 
+export async function uploadImage(file: File): Promise<string | null> {
+  if (!isSupabaseConfigured()) return null
+
+  const fileExt = file.name.split('.').pop()
+  const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`
+  const filePath = `uploads/${fileName}`
+
+  const { error } = await supabase.storage
+    .from('images')
+    .upload(filePath, file)
+
+  if (error) {
+    console.error('Erro ao fazer upload da imagem:', error.message)
+    return null
+  }
+
+  const { data } = supabase.storage
+    .from('images')
+    .getPublicUrl(filePath)
+
+  return data.publicUrl
+}
+
 // ─── TRIPS ───────────────────────────────────────────────────────────────────
 
-export async function getTrips(): Promise<Trip[]> {
+export async function getTrips(includeInactive = false): Promise<Trip[]> {
   if (!isSupabaseConfigured()) return mockTrips
 
-  const { data, error } = await supabase
+  let query = supabase
     .from('trips')
     .select('*')
-    .eq('is_active', true)
     .order('departure_date', { ascending: true })
+
+  if (!includeInactive) {
+    query = query.eq('is_active', true)
+  }
+
+  const { data, error } = await query
 
   if (error) {
     console.error('Erro ao buscar viagens do Supabase:', error.message)
-    if (error.code === '42P01') {
-      console.warn('Dica: A tabela "trips" não foi encontrada. Certifique-se de executar o script SQL no Supabase.')
-    }
-    return mockTrips
+    return []
   }
   
-  if (!data || data.length === 0) {
-    console.warn('A tabela "trips" está vazia. Usando dados locais para demonstração.')
-    return mockTrips
-  }
-
-  return data as Trip[]
+  return (data as Trip[]) || []
 }
 
-export async function getTripById(id: string): Promise<Trip | null> {
-  if (!isSupabaseConfigured()) {
-    return mockTrips.find(t => t.id === id) || null
+export async function createTrip(trip: Omit<Trip, 'id' | 'created_at'>) {
+  const { data, error } = await supabase.from('trips').insert([trip]).select().single()
+  return { data, error }
+}
+
+export async function updateTrip(id: string, trip: Partial<Trip>) {
+  const { data, error } = await supabase.from('trips').update(trip).eq('id', id).select().single()
+  return { data, error }
+}
+
+export async function deleteTrip(id: string) {
+  const { error } = await supabase.from('trips').delete().eq('id', id)
+  return { error }
+}
+
+// ─── DESTINATIONS ─────────────────────────────────────────────────────────────
+
+export async function getDestinations(includeInactive = false): Promise<Destination[]> {
+  if (!isSupabaseConfigured()) return []
+
+  let query = supabase
+    .from('destinations')
+    .select('*')
+    .order('order_index', { ascending: true })
+
+  if (!includeInactive) {
+    query = query.eq('is_active', true)
   }
 
+  const { data, error } = await query
+
+  if (error) return []
+  return data as Destination[]
+}
+
+export async function createDestination(dest: Omit<Destination, 'id' | 'created_at'>) {
+  const { data, error } = await supabase.from('destinations').insert([dest]).select().single()
+  return { data, error }
+}
+
+export async function updateDestination(id: string, dest: Partial<Destination>) {
+  const { data, error } = await supabase.from('destinations').update(dest).eq('id', id).select().single()
+  return { data, error }
+}
+
+export async function deleteDestination(id: string) {
+  const { error } = await supabase.from('destinations').delete().eq('id', id)
+  return { error }
+}
+
+// ─── SITE SETTINGS ────────────────────────────────────────────────────────────
+
+export async function getSettings(): Promise<SiteSettings | null> {
+  if (!isSupabaseConfigured()) return null
+
   const { data, error } = await supabase
-    .from('trips')
+    .from('site_settings')
     .select('*')
-    .eq('id', id)
+    .eq('id', 'contact_info')
     .single()
 
   if (error) return null
-  return data as Trip
+  return data as SiteSettings
+}
+
+export async function updateSettings(settings: Partial<SiteSettings>) {
+  const { data, error } = await supabase
+    .from('site_settings')
+    .update(settings)
+    .eq('id', 'contact_info')
+    .select()
+    .single()
+  return { data, error }
+}
+
+// ─── TEAM MEMBERS ─────────────────────────────────────────────────────────────
+
+export async function getTeamMembers(): Promise<TeamMember[]> {
+  if (!isSupabaseConfigured()) return []
+
+  const { data, error } = await supabase
+    .from('team_members')
+    .select('*')
+    .order('order_index', { ascending: true })
+
+  if (error) return []
+  return data as TeamMember[]
+}
+
+export async function createTeamMember(member: Omit<TeamMember, 'id' | 'created_at'>) {
+  const { data, error } = await supabase.from('team_members').insert([member]).select().single()
+  return { data, error }
+}
+
+export async function updateTeamMember(id: string, member: Partial<TeamMember>) {
+  const { data, error } = await supabase.from('team_members').update(member).eq('id', id).select().single()
+  return { data, error }
+}
+
+export async function deleteTeamMember(id: string) {
+  const { error } = await supabase.from('team_members').delete().eq('id', id)
+  return { error }
 }
 
 // ─── RESERVATIONS ─────────────────────────────────────────────────────────────
@@ -83,19 +192,15 @@ export async function createReservation(
   
   if (error) {
     console.error('Erro ao criar reserva no Supabase:', error)
-    
-    // Se o erro for de chave estrangeira, significa que a viagem não existe no banco
     if (error.code === '23503') {
       return { 
         success: false, 
         error: 'Esta viagem não está cadastrada no banco de dados. Por favor, cadastre as viagens no Supabase primeiro.' 
       }
     }
-    
     return { success: false, error: error.message }
   }
   
-  console.log('Reserva criada com sucesso no Supabase!')
   return { success: true }
 }
 
@@ -110,13 +215,10 @@ export async function getAllReservations(): Promise<Reservation[]> {
     .order('created_at', { ascending: false })
 
   if (error) {
-    console.warn('Erro no Supabase, usando local:', error.message)
     return getLocalReservations()
   }
   
-  const reservations = (data as Reservation[]) || []
-  console.log(`[Admin] Buscadas ${reservations.length} reservas do Supabase.`)
-  return reservations
+  return (data as Reservation[]) || []
 }
 
 export async function updateReservationStatus(

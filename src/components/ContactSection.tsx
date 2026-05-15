@@ -1,7 +1,47 @@
-import { MapPin, Phone, Mail, Instagram, Facebook, Clock, Compass } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { MapPin, Phone, Mail, Instagram, Facebook, Clock, Compass, Loader2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { getSettings } from '../lib/api'
+import { SiteSettings } from '../lib/supabase'
 
 export function ContactSection() {
+  const [settings, setSettings] = useState<SiteSettings | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    getSettings().then(data => {
+      setSettings(data)
+      setLoading(false)
+    })
+  }, [])
+
+  const contactItems = [
+    {
+      icon: Phone,
+      label: 'WhatsApp',
+      value: settings?.whatsapp ? `(63) ${settings.whatsapp.slice(-9, -4)}-${settings.whatsapp.slice(-4)}` : 'Não informado',
+      href: settings?.whatsapp ? `https://wa.me/${settings.whatsapp}` : '#',
+    },
+    {
+      icon: Mail,
+      label: 'E-mail',
+      value: settings?.email || 'Não informado',
+      href: settings?.email ? `mailto:${settings.email}` : '#',
+    },
+    {
+      icon: MapPin,
+      label: 'Localização',
+      value: settings?.address || 'Não informado',
+      href: '#',
+    },
+    {
+      icon: Clock,
+      label: 'Atendimento',
+      value: settings?.working_hours || 'Não informado',
+      href: '#',
+    },
+  ]
+
   return (
     <section id="contato" className="py-32 px-6 bg-dusk relative">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#c98228]/40 to-transparent" />
@@ -21,74 +61,60 @@ export function ContactSection() {
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {[
-                {
-                  icon: Phone,
-                  label: 'WhatsApp',
-                  value: '(63) 9 9999-9999',
-                  href: 'https://wa.me/556399999999',
-                },
-                {
-                  icon: Mail,
-                  label: 'E-mail',
-                  value: 'contato@jalpaoselvagem.com.br',
-                  href: 'mailto:contato@jalpaoselvagem.com.br',
-                },
-                {
-                  icon: MapPin,
-                  label: 'Localização',
-                  value: 'Palmas, Tocantins',
-                  href: '#',
-                },
-                {
-                  icon: Clock,
-                  label: 'Atendimento',
-                  value: 'Seg–Sex: 8h–18h',
-                  href: '#',
-                },
-              ].map(({ icon: Icon, label, value, href }) => (
-                <a
-                  key={label}
-                  href={href}
-                  className="p-5 bg-white border border-black/5 rounded-3xl group 
-                             hover:border-[#c98228]/30 transition-all duration-300"
-                  target={href.startsWith('http') ? '_blank' : undefined}
-                  rel="noopener noreferrer"
-                >
-                  <div className="w-10 h-10 bg-[#c98228]/5 flex items-center justify-center
-                                  group-hover:bg-[#c98228] transition-all duration-500 mb-3 rounded-xl">
-                    <Icon size={16} className="text-[#c98228] group-hover:text-white" />
-                  </div>
-                  <div>
-                    <p className="font-mono text-[9px] uppercase tracking-widest text-night/30 mb-1">
-                      {label}
-                    </p>
-                    <p className="font-body text-xs text-night/70 group-hover:text-night transition-colors font-bold break-all">
-                      {value}
-                    </p>
-                  </div>
-                </a>
-              ))}
+              {loading ? (
+                <div className="col-span-full py-10 flex items-center justify-center gap-3 text-night/20">
+                  <Loader2 size={20} className="animate-spin text-[#c98228]" />
+                  <span className="font-mono text-[10px] uppercase tracking-widest">Sincronizando...</span>
+                </div>
+              ) : (
+                contactItems.map(({ icon: Icon, label, value, href }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    className="p-5 bg-white border border-black/5 rounded-3xl group 
+                               hover:border-[#c98228]/30 transition-all duration-300"
+                    target={href.startsWith('http') ? '_blank' : undefined}
+                    rel="noopener noreferrer"
+                  >
+                    <div className="w-10 h-10 bg-[#c98228]/5 flex items-center justify-center
+                                    group-hover:bg-[#c98228] transition-all duration-500 mb-3 rounded-xl">
+                      <Icon size={16} className="text-[#c98228] group-hover:text-white" />
+                    </div>
+                    <div>
+                      <p className="font-mono text-[9px] uppercase tracking-widest text-night/30 mb-1">
+                        {label}
+                      </p>
+                      <p className="font-body text-xs text-night/70 group-hover:text-night transition-colors font-bold break-all">
+                        {value}
+                      </p>
+                    </div>
+                  </a>
+                ))
+              )}
             </div>
 
             {/* Social */}
-            <div className="flex gap-4 mt-10">
-              {[
-                { icon: Instagram, href: '#', label: 'Instagram' },
-                { icon: Facebook, href: '#', label: 'Facebook' },
-              ].map(({ icon: Icon, href, label }) => (
-                <a
-                  key={label}
-                  href={href}
-                  aria-label={label}
-                  className="w-12 h-12 bg-white border border-black/5 rounded-full flex items-center justify-center
-                             text-night/40 hover:text-white hover:bg-[#c98228] hover:border-[#c98228]
-                             transition-all duration-500 shadow-sm"
-                >
-                  <Icon size={18} />
-                </a>
-              ))}
-            </div>
+            {!loading && (
+              <div className="flex gap-4 mt-10">
+                {[
+                  { icon: Instagram, href: settings?.instagram_url || '#', label: 'Instagram' },
+                  { icon: Facebook, href: settings?.facebook_url || '#', label: 'Facebook' },
+                ].map(({ icon: Icon, href, label }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    aria-label={label}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-12 h-12 bg-white border border-black/5 rounded-full flex items-center justify-center
+                               text-night/40 hover:text-white hover:bg-[#c98228] hover:border-[#c98228]
+                               transition-all duration-500 shadow-sm"
+                  >
+                    <Icon size={18} />
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Right: Quick contact form */}
@@ -136,6 +162,12 @@ export function ContactSection() {
 }
 
 export function Footer() {
+  const [settings, setSettings] = useState<SiteSettings | null>(null)
+
+  useEffect(() => {
+    getSettings().then(setSettings)
+  }, [])
+
   return (
     <footer className="bg-white border-t border-black/10 py-12 px-6">
       <div className="max-w-7xl mx-auto">
@@ -178,10 +210,10 @@ export function Footer() {
         <div className="mt-8 pt-8 border-t border-black/5 flex flex-col md:flex-row 
                         justify-between gap-2 text-center md:text-left">
           <p className="font-mono text-[10px] text-night/20 uppercase tracking-widest">
-            © 2024 Jalapão Selvagem Turismo. Todos os direitos reservados.
+            © {new Date().getFullYear()} Jalapão Selvagem Turismo. Todos os direitos reservados.
           </p>
           <p className="font-mono text-[10px] text-night/20 uppercase tracking-widest">
-            Palmas, Tocantins — Brasil
+            {settings?.address || 'Palmas, Tocantins — Brasil'}
           </p>
         </div>
       </div>

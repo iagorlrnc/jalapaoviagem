@@ -1,4 +1,7 @@
-import { Shield, Award, Heart, Leaf } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Shield, Award, Heart, Leaf, Loader2 } from 'lucide-react'
+import { getTeamMembers } from '../lib/api'
+import { TeamMember } from '../lib/supabase'
 
 const values = [
   {
@@ -23,13 +26,16 @@ const values = [
   },
 ]
 
-const team = [
-  { name: 'Rafael Moreira', role: 'Guia Chefe & Fundador', years: '8 anos de Jalapão' },
-  { name: 'Ana Clara Souza', role: 'Guia Especialista', years: '5 anos de expedições' },
-  { name: 'Marcos Tupinambá', role: 'Guia Cultural & Fotógrafo', years: 'Nativo de Mateiros' },
-]
-
 export function AboutSection() {
+  const [team, setTeam] = useState<TeamMember[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    getTeamMembers().then(data => {
+      setTeam(data)
+      setLoading(false)
+    })
+  }, [])
   return (
     <section id="sobre" className="py-32 px-6 bg-white relative overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#c98228]/40 to-transparent" />
@@ -119,24 +125,35 @@ export function AboutSection() {
             Guias que <span className="text-gradient">conhecem tudo</span>
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {team.map(member => (
-              <div key={member.name}
-                className="bg-white border border-black/5 p-8 rounded-[2rem] 
-                           hover:border-[#c98228]/30 hover:shadow-xl transition-all duration-500 group">
-                <div className="w-20 h-20 bg-gradient-to-br from-[#c98228] to-[#e8c070] mb-6
-                                flex items-center justify-center font-display text-2xl font-black text-white
-                                rounded-2xl group-hover:rotate-6 transition-transform duration-500 shadow-lg">
-                  {member.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                </div>
-                <h4 className="font-display font-bold text-night text-xl mb-1">{member.name}</h4>
-                <p className="font-body text-[#c98228] text-sm mb-4 font-semibold">{member.role}</p>
-                <div className="pt-4 border-t border-black/5">
-                  <p className="font-mono text-night/30 text-[10px] uppercase tracking-widest">
-                    {member.years}
-                  </p>
-                </div>
+            {loading ? (
+              <div className="col-span-3 flex items-center justify-center py-10 gap-3 text-night/40">
+                <Loader2 size={24} className="animate-spin text-[#c98228]" />
+                <span className="font-body">Sincronizando equipe...</span>
               </div>
-            ))}
+            ) : (
+              team.map(member => (
+                <div key={member.id}
+                  className="bg-white border border-black/5 p-8 rounded-[2rem] 
+                             hover:border-[#c98228]/30 hover:shadow-xl transition-all duration-500 group">
+                  <div className="w-20 h-20 mb-6 flex items-center justify-center rounded-[2.5rem] overflow-hidden group-hover:rotate-6 transition-transform duration-500 shadow-lg relative">
+                    {member.image_url ? (
+                      <img src={member.image_url} alt={member.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-[#c98228] to-[#e8c070] flex items-center justify-center font-display text-2xl font-black text-white">
+                        {member.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                      </div>
+                    )}
+                  </div>
+                  <h4 className="font-display font-bold text-night text-xl mb-1">{member.name}</h4>
+                  <p className="font-body text-[#c98228] text-sm mb-4 font-semibold">{member.role}</p>
+                  <div className="pt-4 border-t border-black/5">
+                    <p className="font-mono text-night/30 text-[10px] uppercase tracking-widest">
+                      {member.years_experience}
+                    </p>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>

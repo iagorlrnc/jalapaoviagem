@@ -18,7 +18,7 @@ export function HeroSection() {
   }, [])
 
   return (
-    <section className="relative h-screen min-h-[700px] flex items-center pb-20 md:pb-32 overflow-hidden">
+    <section className="relative h-screen min-h-[700px] flex items-center pb-20 md:pb-40 overflow-hidden">
       {/* Background layers */}
       <div className="absolute inset-0 z-0">
         <div
@@ -76,9 +76,9 @@ export function HeroSection() {
             </button>
             <button
               onClick={() => document.getElementById('destinos')?.scrollIntoView({ behavior: 'smooth' })}
-              className="border border-white/30 text-white hover:bg-white hover:text-black
+              className="bg-white text-[#c98228] hover:bg-white/90 
                          font-bold px-8 py-4 rounded-full transition-all duration-300 
-                         uppercase tracking-widest text-sm"
+                         uppercase tracking-widest text-sm shadow-xl"
             >
               Explorar Destinos
             </button>
