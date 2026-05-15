@@ -41,8 +41,8 @@ export function TripsSection() {
               <button
                 key={f}
                 onClick={() => setFilter(f)}
-                className={`font-mono text-xs uppercase tracking-widest px-4 py-2 
-                            border transition-all duration-200
+                className={`font-mono text-xs uppercase tracking-widest px-6 py-2 
+                            border transition-all duration-200 rounded-full
                             ${filter === f
                               ? 'bg-[#c98228] text-white border-[#c98228] font-bold'
                               : 'border-black/10 text-night/40 hover:border-[#c98228]/50 hover:text-[#c98228]'

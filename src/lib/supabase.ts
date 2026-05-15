@@ -33,8 +33,25 @@ export type Database = {
         Insert: SiteSettings
         Update: Partial<SiteSettings>
       }
+      messages: {
+        Row: ContactMessage
+        Insert: Omit<ContactMessage, 'id' | 'created_at'>
+        Update: Partial<Omit<ContactMessage, 'id' | 'created_at'>>
+      }
     }
   }
+}
+
+export interface ContactMessage {
+  id: string
+  created_at: string
+  name: string
+  email: string
+  phone?: string
+  subject?: string
+  message: string
+  status: 'unread' | 'read' | 'archived'
+  is_archived: boolean
 }
 
 export interface SiteSettings {
@@ -45,6 +62,7 @@ export interface SiteSettings {
   working_hours: string
   instagram_url: string
   facebook_url: string
+  maps_url?: string
   updated_at?: string
 }
 

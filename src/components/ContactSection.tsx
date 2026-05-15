@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { MapPin, Phone, Mail, Instagram, Facebook, Clock, Compass, Loader2 } from 'lucide-react'
+import { MapPin, Phone, Mail, Instagram, Facebook, Clock, Compass, Loader2, CheckCircle } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { getSettings } from '../lib/api'
+import { getSettings, sendMessage } from '../lib/api'
 import { SiteSettings } from '../lib/supabase'
 
 export function ContactSection() {
@@ -32,15 +32,64 @@ export function ContactSection() {
       icon: MapPin,
       label: 'Localização',
       value: settings?.address || 'Não informado',
-      href: '#',
+      href: settings?.maps_url || '',
     },
     {
       icon: Clock,
       label: 'Atendimento',
       value: settings?.working_hours || 'Não informado',
-      href: '#',
+      href: '',
     },
   ]
+
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    subject: '',
+    message: ''
+  })
+
+  const maskPhone = (value: string) => {
+    return value
+      .replace(/\D/g, '')
+      .replace(/(\d{2})(\d)/, '($1) $2')
+      .replace(/(\d{5})(\d)/, '$1-$2')
+      .replace(/(-\d{4})\d+?$/, '$1')
+  }
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const masked = maskPhone(e.target.value)
+    setForm({ ...form, phone: masked })
+  }
+
+  const [loadingMsg, setLoadingMsg] = useState(false)
+  const [sent, setSent] = useState(false)
+
+  const handleSubmit = async () => {
+    if (!form.name || !form.email || !form.message) {
+      alert('Por favor, preencha os campos obrigatórios (Nome, E-mail e Mensagem).')
+      return
+    }
+
+    setLoadingMsg(true)
+    const result = await sendMessage({
+      name: form.name,
+      email: form.email,
+      phone: form.phone,
+      subject: form.subject || 'Sem assunto',
+      message: form.message
+    })
+
+    setLoadingMsg(false)
+    if (result.success) {
+      setSent(true)
+      setForm({ name: '', email: '', phone: '', subject: '', message: '' })
+      setTimeout(() => setSent(false), 5000)
+    } else {
+      alert('Erro ao enviar mensagem. Tente novamente.')
+    }
+  }
 
   return (
     <section id="contato" className="py-32 px-6 bg-dusk relative">
@@ -67,29 +116,32 @@ export function ContactSection() {
                   <span className="font-mono text-[10px] uppercase tracking-widest">Sincronizando...</span>
                 </div>
               ) : (
-                contactItems.map(({ icon: Icon, label, value, href }) => (
-                  <a
-                    key={label}
-                    href={href}
-                    className="p-5 bg-white border border-black/5 rounded-3xl group 
-                               hover:border-[#c98228]/30 transition-all duration-300"
-                    target={href.startsWith('http') ? '_blank' : undefined}
-                    rel="noopener noreferrer"
-                  >
-                    <div className="w-10 h-10 bg-[#c98228]/5 flex items-center justify-center
-                                    group-hover:bg-[#c98228] transition-all duration-500 mb-3 rounded-xl">
-                      <Icon size={16} className="text-[#c98228] group-hover:text-white" />
-                    </div>
-                    <div>
-                      <p className="font-mono text-[9px] uppercase tracking-widest text-night/30 mb-1">
-                        {label}
-                      </p>
-                      <p className="font-body text-xs text-night/70 group-hover:text-night transition-colors font-bold break-all">
-                        {value}
-                      </p>
-                    </div>
-                  </a>
-                ))
+                contactItems.map(({ icon: Icon, label, value, href }) => {
+                  const Tag = href ? 'a' : 'div'
+                  return (
+                    <Tag
+                      key={label}
+                      href={href || undefined}
+                      className={`p-8 bg-black/5 backdrop-blur-xl border border-white/20 rounded-[3.5rem] group 
+                                 transition-all duration-500 shadow-2xl flex flex-col items-center text-center
+                                 hover:bg-black/20 hover:scale-[1.02] ${href ? 'cursor-pointer' : 'cursor-default'}`}
+                      target={href?.startsWith('http') ? '_blank' : undefined}
+                      rel="noopener noreferrer"
+                    >
+                      <div className="w-12 h-12 bg-white flex items-center justify-center mb-4 rounded-2xl shadow-sm">
+                        <Icon size={18} className="text-[#c98228]" />
+                      </div>
+                      <div>
+                        <p className="font-mono text-[9px] uppercase tracking-widest text-night/30 mb-1">
+                          {label}
+                        </p>
+                        <p className="font-body text-xs text-night/70 group-hover:text-night transition-colors font-bold break-all">
+                          {value}
+                        </p>
+                      </div>
+                    </Tag>
+                  )
+                })
               )}
             </div>
 
@@ -118,7 +170,7 @@ export function ContactSection() {
           </div>
 
           {/* Right: Quick contact form */}
-          <div className="bg-white border border-black/5 p-10 rounded-[2.5rem] shadow-xl">
+          <div className="bg-black/5 backdrop-blur-xl border border-white/20 p-10 rounded-[3.5rem] shadow-2xl relative z-10">
             <p className="font-mono text-[10px] uppercase tracking-widest text-[#c98228] mb-8 font-bold text-center">
               ✦ Envie uma Mensagem
             </p>
@@ -126,16 +178,31 @@ export function ContactSection() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <input
                   type="text"
-                  placeholder="Seu nome"
-                  className="input-field"
+                  placeholder="Nome Completo"
+                  value={form.name}
+                  onChange={e => setForm({ ...form, name: e.target.value })}
+                  className="input-field bg-white/50"
+                />
+                <input
+                  type="tel"
+                  placeholder="Whatsapp"
+                  value={form.phone}
+                  onChange={handlePhoneChange}
+                  className="input-field bg-white/50"
                 />
                 <input
                   type="email"
-                  placeholder="Seu e-mail"
-                  className="input-field"
+                  placeholder="E-mail"
+                  value={form.email}
+                  onChange={e => setForm({ ...form, email: e.target.value })}
+                  className="input-field sm:col-span-2 bg-white/50"
                 />
               </div>
-              <select className="input-field">
+              <select 
+                className="input-field bg-white/50"
+                value={form.subject}
+                onChange={e => setForm({ ...form, subject: e.target.value })}
+              >
                 <option value="">Assunto da mensagem</option>
                 <option>Informações sobre viagens</option>
                 <option>Orçamento personalizado</option>
@@ -145,12 +212,24 @@ export function ContactSection() {
               <textarea
                 rows={5}
                 placeholder="Sua mensagem..."
-                className="input-field resize-none"
+                value={form.message}
+                onChange={e => setForm({ ...form, message: e.target.value })}
+                className="input-field resize-none bg-white/50"
               />
-              <button className="btn-primary w-full py-5 text-sm">
-                Enviar Mensagem
+              <button 
+                onClick={handleSubmit}
+                disabled={loadingMsg || sent}
+                className={`btn-primary w-full py-5 text-sm flex items-center justify-center gap-2 transition-all ${sent ? 'bg-emerald-600' : ''}`}
+              >
+                {loadingMsg ? (
+                  <><Loader2 size={16} className="animate-spin" /> Enviando...</>
+                ) : sent ? (
+                  <><CheckCircle size={16} /> Mensagem Enviada!</>
+                ) : (
+                  'Enviar Mensagem'
+                )}
               </button>
-              <p className="font-mono text-[9px] text-night/20 text-center uppercase tracking-widest">
+              <p className="font-mono text-[9px] text-night text-center uppercase tracking-widest">
                 Dúvidas urgentes? Use nosso canal de WhatsApp.
               </p>
             </div>
@@ -189,8 +268,8 @@ export function Footer() {
               <button
                 key={item}
                 onClick={() => document.getElementById(item.toLowerCase())?.scrollIntoView({ behavior: 'smooth' })}
-                className="font-body text-night/30 hover:text-night/60 text-xs uppercase 
-                           tracking-widest transition-colors"
+                className="font-body text-night hover:text-[#c98228] text-xs uppercase 
+                           tracking-widest transition-colors font-bold"
               >
                 {item}
               </button>
@@ -200,8 +279,8 @@ export function Footer() {
           {/* Admin link */}
           <Link
             to="/admin/login"
-            className="font-mono text-[10px] text-night/20 hover:text-night/40 
-                       uppercase tracking-widest transition-colors"
+            className="font-mono text-[10px] text-night/60 hover:text-[#c98228] 
+                       uppercase tracking-widest transition-colors font-bold"
           >
             Área Admin
           </Link>
@@ -209,10 +288,10 @@ export function Footer() {
 
         <div className="mt-8 pt-8 border-t border-black/5 flex flex-col md:flex-row 
                         justify-between gap-2 text-center md:text-left">
-          <p className="font-mono text-[10px] text-night/20 uppercase tracking-widest">
+          <p className="font-mono text-[10px] text-night font-bold uppercase tracking-widest">
             © {new Date().getFullYear()} Jalapão Selvagem Turismo. Todos os direitos reservados.
           </p>
-          <p className="font-mono text-[10px] text-night/20 uppercase tracking-widest">
+          <p className="font-mono text-[10px] text-night font-bold uppercase tracking-widest">
             {settings?.address || 'Palmas, Tocantins — Brasil'}
           </p>
         </div>

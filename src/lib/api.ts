@@ -1,4 +1,4 @@
-import { supabase, Trip, Reservation, Destination, TeamMember, SiteSettings } from './supabase'
+import { supabase, Trip, Reservation, Destination, TeamMember, SiteSettings, ContactMessage } from './supabase'
 import { mockTrips } from './mockData'
 
 const isSupabaseConfigured = () => {
@@ -252,4 +252,83 @@ export async function deleteReservation(id: string): Promise<{ success: boolean 
 
   const { error } = await supabase.from('reservations').delete().eq('id', id)
   return { success: !error }
+}
+
+// ─── MESSAGES ─────────────────────────────────────────────────────────────────
+
+const MSG_LOCAL_KEY = 'jalapao_messages'
+
+function getLocalMessages(): ContactMessage[] {
+  try {
+    return JSON.parse(localStorage.getItem(MSG_LOCAL_KEY) || '[]')
+  } catch {
+    return []
+  }
+}
+
+function saveLocalMessage(m: ContactMessage) {
+  const all = getLocalMessages()
+  all.push(m)
+  localStorage.setItem(MSG_LOCAL_KEY, JSON.stringify(all))
+}
+
+export async function sendMessage(data: Omit<ContactMessage, 'id' | 'created_at' | 'status' | 'is_archived'>) {
+  if (!isSupabaseConfigured()) {
+    const msg: ContactMessage = {
+      ...data,
+      id: `msg-${Date.now()}`,
+      created_at: new Date().toISOString(),
+      status: 'unread',
+      is_archived: false
+    }
+    saveLocalMessage(msg)
+    return { success: true }
+  }
+
+  const { error } = await supabase.from('messages').insert([data])
+  return { success: !error, error }
+}
+
+export async function getMessages(): Promise<ContactMessage[]> {
+  if (!isSupabaseConfigured()) {
+    return getLocalMessages().sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+  }
+
+  const { data, error } = await supabase
+    .from('messages')
+    .select('*')
+    .order('created_at', { ascending: false })
+  
+  if (error) {
+    console.error('Erro ao buscar mensagens do Supabase:', error.message)
+    return getLocalMessages().sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+  }
+  
+  return data as ContactMessage[]
+}
+
+export async function updateMessageStatus(id: string, status: ContactMessage['status']) {
+  if (!isSupabaseConfigured() || id.startsWith('msg-')) {
+    const all = getLocalMessages()
+    const idx = all.findIndex(m => m.id === id)
+    if (idx !== -1) {
+      all[idx].status = status
+      localStorage.setItem(MSG_LOCAL_KEY, JSON.stringify(all))
+    }
+    return { success: true }
+  }
+
+  const { error } = await supabase.from('messages').update({ status }).eq('id', id)
+  return { success: !error, error }
+}
+
+export async function deleteMessage(id: string) {
+  if (!isSupabaseConfigured() || id.startsWith('msg-')) {
+    const all = getLocalMessages().filter(m => m.id !== id)
+    localStorage.setItem(MSG_LOCAL_KEY, JSON.stringify(all))
+    return { success: true }
+  }
+
+  const { error } = await supabase.from('messages').delete().eq('id', id)
+  return { success: !error, error }
 }

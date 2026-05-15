@@ -7,17 +7,18 @@ import {
   MapPin, Image as ImageIcon, Star, LayoutGrid, Luggage, UserPlus, Settings, Phone, Mail, Clock4
 } from 'lucide-react'
 import { 
-  Reservation, Trip, Destination, TeamMember, SiteSettings 
-} from '../lib/supabase'
-import { 
   getAllReservations, updateReservationStatus, deleteReservation,
   getTrips, createTrip, updateTrip, deleteTrip,
   getDestinations, createDestination, updateDestination, deleteDestination,
   getTeamMembers, createTeamMember, updateTeamMember, deleteTeamMember,
-  getSettings, updateSettings, uploadImage
+  getSettings, updateSettings, uploadImage,
+  getMessages, updateMessageStatus, deleteMessage
 } from '../lib/api'
+import { 
+  Reservation, Trip, Destination, TeamMember, SiteSettings, ContactMessage 
+} from '../lib/supabase'
 
-type AdminTab = 'dashboard' | 'reservations' | 'destinations' | 'trips' | 'team' | 'settings'
+type AdminTab = 'dashboard' | 'reservations' | 'messages' | 'trips' | 'destinations' | 'team' | 'settings'
 
 const statusConfig = {
   pendente: {
@@ -67,6 +68,7 @@ export function AdminPage() {
   
   // Data states
   const [reservations, setReservations] = useState<Reservation[]>([])
+  const [messages, setMessages] = useState<ContactMessage[]>([])
   const [trips, setTrips] = useState<Trip[]>([])
   const [destinations, setDestinations] = useState<Destination[]>([])
   const [team, setTeam] = useState<TeamMember[]>([])
@@ -90,18 +92,21 @@ export function AdminPage() {
 
   const loadAllData = async () => {
     setLoading(true)
-    const [resData, tripData, destData, teamData, settingsData] = await Promise.all([
+    const [resData, tripData, destData, teamData, settingsData, msgData] = await Promise.all([
       getAllReservations(),
       getTrips(true),
       getDestinations(true),
       getTeamMembers(),
-      getSettings()
+      getSettings(),
+      getMessages()
     ])
     setReservations(resData)
     setTrips(tripData)
     setDestinations(destData)
     setTeam(teamData)
     setSettings(settingsData)
+    setMessages(msgData || [])
+    console.log('Mensagens carregadas:', msgData)
     setLoading(false)
   }
 
@@ -130,6 +135,7 @@ export function AdminPage() {
           {[
             { id: 'dashboard', icon: LayoutGrid, label: 'Dashboard' },
             { id: 'reservations', icon: Calendar, label: 'Reservas' },
+            { id: 'messages', icon: MessageCircle, label: 'Mensagens' },
             { id: 'trips', icon: Luggage, label: 'Viagens' },
             { id: 'destinations', icon: MapPin, label: 'Destinos' },
             { id: 'team', icon: Users, label: 'Nossa Equipe' },
@@ -143,6 +149,7 @@ export function AdminPage() {
                 setIsEditing(false)
                 setIsAdding(false)
                 setSearchQuery('')
+                loadAllData() // Refresh data on switch
               }}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-body text-black text-[11px] uppercase tracking-wider transition-all duration-300
                           ${activeTab === item.id 
@@ -174,6 +181,7 @@ export function AdminPage() {
             <h2 className="font-body text-2xl font-bold text-black">
               {activeTab === 'dashboard' && 'Visão Geral'}
               {activeTab === 'reservations' && 'Gestão de Reservas'}
+              {activeTab === 'messages' && 'Central de Mensagens'}
               {activeTab === 'trips' && 'Catálogo de Viagens'}
               {activeTab === 'destinations' && 'Destinos Imperdíveis'}
               {activeTab === 'team' && 'Gestão da Equipe'}
@@ -202,7 +210,7 @@ export function AdminPage() {
             >
               <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
             </button>
-            {activeTab !== 'reservations' && activeTab !== 'settings' && activeTab !== 'dashboard' && (
+            {activeTab !== 'reservations' && activeTab !== 'messages' && activeTab !== 'settings' && activeTab !== 'dashboard' && (
               <button
                 onClick={() => {
                   setIsAdding(true)
@@ -225,8 +233,9 @@ export function AdminPage() {
             </div>
           ) : (
             <div className="max-w-6xl mx-auto space-y-8 pb-12">
-              {activeTab === 'dashboard' && <DashboardView reservations={reservations} trips={trips} destinations={destinations} onView={(r: any) => { setSelectedItem(r); setIsViewing(true); }} />}
+              {activeTab === 'dashboard' && <DashboardView reservations={reservations} trips={trips} destinations={destinations} messages={messages} onTabChange={setActiveTab} onView={(r: any) => { setSelectedItem(r); setIsViewing(true); }} />}
               {activeTab === 'reservations' && <ReservationsList reservations={reservations} setReservations={setReservations} searchQuery={searchQuery} onView={(r: any) => { setSelectedItem(r); setIsViewing(true); }} />}
+              {activeTab === 'messages' && <MessagesList messages={messages} setMessages={setMessages} searchQuery={searchQuery} onView={(m: any) => { setSelectedItem(m); setIsViewing(true); }} />}
               {activeTab === 'trips' && <TripsList trips={trips} setTrips={setTrips} onEdit={(t: any) => { setSelectedItem(t); setIsEditing(true); }} searchQuery={searchQuery} />}
               {activeTab === 'destinations' && <DestinationsList destinations={destinations} setDestinations={setDestinations} onEdit={(d: any) => { setSelectedItem(d); setIsEditing(true); }} searchQuery={searchQuery} />}
               {activeTab === 'team' && <TeamList team={team} setTeam={setTeam} onEdit={(m: any) => { setSelectedItem(m); setIsEditing(true); }} searchQuery={searchQuery} />}
@@ -247,13 +256,14 @@ export function AdminPage() {
               <div className="flex items-center justify-between mb-10">
                 <div>
                   <h3 className="font-body text-2xl font-bold text-black">
-                    {isAdding ? 'Novo Registro' : isViewing ? 'Detalhes da Reserva' : 'Editar Informações'}
+                    {isAdding ? 'Novo Registro' : isViewing ? (activeTab === 'messages' ? 'Detalhes da Mensagem' : 'Detalhes da Reserva') : 'Editar Informações'}
                   </h3>
                   <p className="font-body text-black text-[10px] uppercase tracking-wider mt-1">
                     {activeTab === 'trips' && 'Módulo de Viagens'}
                     {activeTab === 'destinations' && 'Módulo de Destinos'}
                     {activeTab === 'team' && 'Módulo de Equipe'}
                     {activeTab === 'reservations' && 'Módulo de Reservas'}
+                    {activeTab === 'messages' && 'Módulo de Comunicação'}
                     {activeTab === 'dashboard' && 'Visualização de Dados'}
                   </p>
                 </div>
@@ -263,7 +273,7 @@ export function AdminPage() {
               </div>
 
               <div className="space-y-6">
-                {isViewing && selectedItem && (
+                {isViewing && selectedItem && activeTab === 'reservations' && (
                   <ReservationDetails 
                     item={selectedItem} 
                     onStatusChange={async (id, status) => {
@@ -275,6 +285,24 @@ export function AdminPage() {
                       if (!confirm('Deseja realmente deletar esta reserva?')) return;
                       await deleteReservation(id);
                       setReservations(reservations.filter(r => r.id !== id));
+                      setIsViewing(false);
+                      setSelectedItem(null);
+                    }}
+                  />
+                )}
+
+                {isViewing && selectedItem && activeTab === 'messages' && (
+                  <MessageDetails 
+                    item={selectedItem} 
+                    onStatusChange={async (id: string, status: ContactMessage['status']) => {
+                      await updateMessageStatus(id, status);
+                      setMessages(messages.map(m => m.id === id ? { ...m, status } : m));
+                      setSelectedItem({ ...selectedItem, status });
+                    }}
+                    onDelete={async (id: string) => {
+                      if (!confirm('Deseja realmente deletar esta mensagem?')) return;
+                      await deleteMessage(id);
+                      setMessages(messages.filter(m => m.id !== id));
                       setIsViewing(false);
                       setSelectedItem(null);
                     }}
@@ -656,13 +684,27 @@ function TeamList({ team, setTeam, onEdit, searchQuery }: any) {
 
 // ─── VIEWS ────────────────────────────────────────────────────────────────────
 
-function DashboardView({ reservations, trips, destinations, onView }: { reservations: Reservation[], trips: Trip[], destinations: any[], onView: (r: any) => void }) {
+function DashboardView({ 
+  reservations, 
+  trips, 
+  destinations, 
+  messages, 
+  onView, 
+  onTabChange 
+}: { 
+  reservations: Reservation[], 
+  trips: Trip[], 
+  destinations: any[], 
+  messages: ContactMessage[], 
+  onView: (r: any) => void,
+  onTabChange: (tab: AdminTab) => void
+}) {
   const totalRevenue = reservations
     .filter(r => r.status === 'confirmada')
     .reduce((sum, r) => sum + Number(r.total_price), 0)
   
   const pendingReservations = reservations.filter(r => r.status === 'pendente').length
-  const confirmedReservations = reservations.filter(r => r.status === 'confirmada').length
+  const unreadMessages = messages.filter(m => m.status === 'unread').length
   const totalConfirmedPeople = reservations
     .filter(r => r.status === 'confirmada')
     .reduce((sum, r) => sum + Number(r.num_people), 0)
@@ -670,7 +712,7 @@ function DashboardView({ reservations, trips, destinations, onView }: { reservat
   const stats = [
     { label: 'Receita Total', value: `R$ ${totalRevenue.toLocaleString()}`, icon: DollarSign, color: 'text-green-600', bg: 'bg-green-50' },
     { label: 'Reservas Pendentes', value: pendingReservations, icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50' },
-    { label: 'Vendas Confirmadas', value: confirmedReservations, icon: CheckCircle, color: 'text-blue-600', bg: 'bg-blue-50' },
+    { label: 'Mensagens Novas', value: unreadMessages, icon: Mail, color: 'text-blue-600', bg: 'bg-blue-50' },
     { label: 'Viajantes Confirmados', value: totalConfirmedPeople, icon: Users, color: 'text-purple-600', bg: 'bg-purple-50' },
     { label: 'Destinos Ativos', value: destinations.filter((d: any) => d.is_active).length, icon: MapPin, color: 'text-[#c98228]', bg: 'bg-sand-50' },
   ]
@@ -727,29 +769,34 @@ function DashboardView({ reservations, trips, destinations, onView }: { reservat
 
         <div className="bg-white rounded-[2rem] border border-black/5 p-8 shadow-sm">
           <div className="flex justify-between items-center mb-8">
-            <h3 className="font-body text-xl font-bold text-night">Alerta de Vagas</h3>
-            <span className="font-body text-[10px] text-red-500 bg-red-50 px-3 py-1 rounded-full uppercase tracking-widest">Crítico</span>
+            <h3 className="font-body text-xl font-bold text-night">Mensagens Recentes</h3>
+            <span className="font-body text-[10px] text-blue-500 bg-blue-50 px-3 py-1 rounded-full uppercase tracking-wider">Novas</span>
           </div>
           <div className="space-y-4">
-            {trips.filter(t => t.available_spots <= 3 && t.is_active).map(t => (
-              <div key={t.id} className="flex items-center justify-between p-4 rounded-2xl bg-red-50/50 border border-red-100">
+            {messages.slice(0, 5).map(m => (
+              <div 
+                key={m.id} 
+                onClick={() => { onTabChange('messages'); onView(m); }}
+                className="flex items-center justify-between p-4 rounded-2xl hover:bg-black/5 transition-colors group cursor-pointer"
+              >
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-red-500 text-white rounded-xl flex items-center justify-center">
-                    <Luggage size={18} />
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${m.status === 'unread' ? 'bg-blue-50 text-blue-600' : 'bg-black/5 text-night/30'}`}>
+                    {m.status === 'unread' ? <Mail size={18} /> : <Eye size={18} />}
                   </div>
                   <div>
-                    <h4 className="font-body text-black text-sm">{t.name}</h4>
-                    <p className="font-body text-red-600 text-[10px] font-bold uppercase tracking-wider">Apenas {t.available_spots} vagas restantes!</p>
+                    <h4 className="font-body text-black text-sm group-hover:text-sand-600 transition-colors font-bold">{m.name}</h4>
+                    <p className="font-body text-night/30 text-xs truncate max-w-[150px]">{m.subject || 'Sem assunto'}</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="font-body text-[9px] text-night/30 uppercase">{new Date(t.departure_date).toLocaleDateString()}</p>
+                  <p className="font-body text-black text-[10px] font-bold">{formatDate(m.created_at)}</p>
+                  <p className="font-body text-[8px] text-night/20 uppercase">{m.status === 'unread' ? 'Pendente' : 'Lida'}</p>
                 </div>
               </div>
             ))}
-            {trips.filter(t => t.available_spots <= 3 && t.is_active).length === 0 && (
-              <div className="py-12 text-center">
-                <p className="font-body text-night/20">Todas as viagens com vagas seguras.</p>
+            {messages.length === 0 && (
+              <div className="py-12 text-center text-night/20">
+                Nenhuma mensagem recente.
               </div>
             )}
           </div>
@@ -1069,7 +1116,8 @@ function SettingsForm({ initialSettings, onSave }: any) {
     address: '', 
     working_hours: '',
     instagram_url: '',
-    facebook_url: ''
+    facebook_url: '',
+    maps_url: ''
   })
 
   return (
@@ -1105,6 +1153,15 @@ function SettingsForm({ initialSettings, onSave }: any) {
             <input className="input-field rounded-2xl" value={form.address} onChange={e => setForm({...form, address: e.target.value})} />
           </div>
           <div>
+            <label className="label">Link do Google Maps</label>
+            <input 
+              className="input-field rounded-2xl" 
+              value={form.maps_url || ''} 
+              onChange={e => setForm({...form, maps_url: e.target.value})} 
+              placeholder="https://goo.gl/maps/..."
+            />
+          </div>
+          <div>
             <label className="label">Horário de Atendimento</label>
             <input className="input-field rounded-2xl" value={form.working_hours} onChange={e => setForm({...form, working_hours: e.target.value})} placeholder="Ex: Seg a Sex, 08h às 18h" />
           </div>
@@ -1131,6 +1188,176 @@ function SettingsForm({ initialSettings, onSave }: any) {
         <button onClick={() => onSave(form)} className="btn-primary w-full py-4 rounded-full flex items-center justify-center gap-3">
           <RefreshCw size={18} /> Salvar Configurações Globais
         </button>
+      </div>
+    </div>
+  )
+}
+
+function MessagesList({ messages, setMessages, searchQuery, onView }: { messages: ContactMessage[], setMessages: any, searchQuery: string, onView: any }) {
+  const filtered = messages.filter(m => 
+    m.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    m.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    m.subject?.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+
+  const msgStatusConfig = {
+    unread: { label: 'Não lida', icon: Mail, classes: 'text-blue-600 bg-blue-50 border-blue-200' },
+    read: { label: 'Lida', icon: Eye, classes: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
+    archived: { label: 'Arquivada', icon: Clock4, classes: 'text-night/40 bg-black/5 border-black/10' }
+  }
+
+  return (
+    <div className="bg-white rounded-[2.5rem] border border-black/5 overflow-hidden shadow-sm">
+      <div className="overflow-x-auto">
+        <table className="w-full text-left">
+          <thead className="bg-black/5 border-b border-black/5">
+            <tr>
+              <th className="px-8 py-5 font-body text-[10px] uppercase tracking-widest text-black/40">Remetente</th>
+              <th className="px-8 py-5 font-body text-[10px] uppercase tracking-widest text-black/40">Assunto</th>
+              <th className="px-8 py-5 font-body text-[10px] uppercase tracking-widest text-black/40">Data</th>
+              <th className="px-8 py-5 font-body text-[10px] uppercase tracking-widest text-black/40">Status</th>
+              <th className="px-8 py-5"></th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-black/5">
+            {filtered.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="px-8 py-20 text-center">
+                  <div className="flex flex-col items-center gap-3 text-night/20">
+                    <MessageCircle size={40} strokeWidth={1} />
+                    <p className="font-body text-sm uppercase tracking-widest">Nenhuma mensagem recebida</p>
+                  </div>
+                </td>
+              </tr>
+            ) : (
+              filtered.map(msg => (
+                <tr 
+                  key={msg.id} 
+                  onClick={() => onView(msg)}
+                  className="hover:bg-black/[0.02] transition-colors group cursor-pointer"
+                >
+                  <td className="px-8 py-5">
+                    <div className="flex flex-col">
+                      <span className="font-body font-bold text-night text-sm">{msg.name}</span>
+                      <span className="font-mono text-[10px] text-night/30">{msg.email}</span>
+                    </div>
+                  </td>
+                  <td className="px-8 py-5">
+                    <span className="font-body text-sm text-night/60">{msg.subject || 'Sem assunto'}</span>
+                  </td>
+                  <td className="px-8 py-5">
+                    <span className="font-mono text-[11px] text-night/40">{formatDate(msg.created_at)}</span>
+                  </td>
+                  <td className="px-8 py-5">
+                    <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full border text-[10px] font-bold uppercase tracking-wider ${msgStatusConfig[msg.status].classes}`}>
+                      {msgStatusConfig[msg.status].label}
+                    </div>
+                  </td>
+                  <td className="px-8 py-5 text-right">
+                    <button 
+                      onClick={() => onView(msg)}
+                      className="p-2 text-night/20 hover:text-sand-600 transition-colors"
+                    >
+                      <Eye size={18} />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
+
+function MessageDetails({ item, onStatusChange, onDelete }: { item: ContactMessage, onStatusChange: any, onDelete: any }) {
+  return (
+    <div className="space-y-8">
+      <div className="flex flex-col gap-6">
+        <div className="bg-black/5 p-6 rounded-3xl">
+          <p className="label mb-4">Informações de Contato</p>
+          <div className="space-y-4">
+            <div className="flex items-center gap-3 text-night">
+              <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm">
+                <Users size={16} className="text-sand-600" />
+              </div>
+              <span className="text-sm font-bold">{item.name}</span>
+            </div>
+            <div className="flex items-center gap-3 text-night/60">
+              <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm">
+                <Mail size={16} className="text-sand-600" />
+              </div>
+              <span className="text-sm">{item.email}</span>
+            </div>
+            {item.phone && (
+              <div className="flex items-center gap-3 text-night/60">
+                <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm">
+                  <Phone size={16} className="text-sand-600" />
+                </div>
+                <span className="text-sm">{item.phone}</span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="bg-black/5 p-6 rounded-3xl">
+          <p className="label mb-4">Metadata</p>
+          <div className="flex gap-8">
+            <div className="flex items-center gap-3 text-night/60">
+              <Calendar size={16} className="text-sand-600" />
+              <span className="text-sm font-mono">{formatDate(item.created_at)}</span>
+            </div>
+            <div className="flex items-center gap-3 text-night/60">
+              <Clock size={16} className="text-sand-600" />
+              <span className="text-sm font-mono">{new Date(item.created_at).toLocaleTimeString('pt-BR')}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-black/5 p-8 rounded-[2rem]">
+        <p className="label mb-4">Mensagem</p>
+        <div className="font-body text-night leading-relaxed whitespace-pre-wrap text-sm italic">
+          "{item.message}"
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-4 pt-6 border-t border-black/5">
+        <div className="flex gap-3">
+          {item.status === 'unread' ? (
+            <button
+              onClick={() => onStatusChange(item.id, 'read')}
+              className="flex-1 btn-primary py-4 rounded-2xl flex items-center justify-center gap-2"
+            >
+              <CheckCircle size={18} /> Marcar como Lida
+            </button>
+          ) : (
+            <button
+              onClick={() => onStatusChange(item.id, 'unread')}
+              className="flex-1 border border-black/10 text-night/60 hover:bg-black/5 py-4 rounded-2xl flex items-center justify-center gap-2 transition-all"
+            >
+              <Mail size={18} /> Marcar como Não Lida
+            </button>
+          )}
+          <button
+            onClick={() => onDelete(item.id)}
+            className="w-16 border border-red-100 text-red-500 hover:bg-red-50 flex items-center justify-center rounded-2xl transition-all"
+          >
+            <Trash2 size={20} />
+          </button>
+        </div>
+        
+        {item.phone && (
+          <a
+            href={`https://wa.me/${item.phone.replace(/\D/g, '')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full bg-[#25D366] text-white py-4 rounded-2xl flex items-center justify-center gap-2 font-bold hover:brightness-95 transition-all shadow-lg shadow-emerald-500/10"
+          >
+            <MessageCircle size={18} /> Responder via WhatsApp
+          </a>
+        )}
       </div>
     </div>
   )

@@ -76,25 +76,25 @@ export function AboutSection() {
           {/* Image collage */}
           <div className="relative h-96 lg:h-auto">
             <div
-              className="absolute inset-0 lg:inset-4"
+              className="absolute inset-0 lg:inset-4 rounded-[3rem] overflow-hidden shadow-2xl"
               style={{
                 backgroundImage: `url('https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=700&q=80')`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
               }}
             />
-            <div className="absolute -bottom-6 -left-6 w-48 h-48 border-4 border-white"
+            <div className="absolute -bottom-6 -left-6 w-48 h-48 border-[6px] border-white rounded-[2rem] overflow-hidden shadow-xl"
               style={{
                 backgroundImage: `url('https://images.unsplash.com/photo-1532274402911-5a369e4c4bb5?w=300&q=80')`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
               }}
             />
-            <div className="absolute -top-4 -right-4 font-mono text-xs text-right p-4 
-                            bg-[#c98228] text-white">
-              <div className="text-3xl font-black font-display">8</div>
-              <div className="uppercase tracking-widest text-[10px]">Anos de</div>
-              <div className="uppercase tracking-widest text-[10px]">Experiência</div>
+            <div className="absolute -top-4 -right-4 font-mono text-xs text-center p-6 
+                            bg-[#c98228] text-white rounded-[2rem] shadow-xl flex flex-col items-center justify-center min-w-[120px]">
+              <div className="text-4xl font-black font-display mb-1">8</div>
+              <div className="uppercase tracking-widest text-[8px] font-bold opacity-80 leading-tight">Anos de</div>
+              <div className="uppercase tracking-widest text-[8px] font-bold opacity-80 leading-tight">Experiência</div>
             </div>
           </div>
         </div>
@@ -133,8 +133,10 @@ export function AboutSection() {
             ) : (
               team.map(member => (
                 <div key={member.id}
-                  className="bg-white border border-black/5 p-8 rounded-[2rem] 
-                             hover:border-[#c98228]/30 hover:shadow-xl transition-all duration-500 group">
+                  className="bg-black/5 backdrop-blur-xl border border-white/20 p-8 rounded-[3.5rem] 
+                             hover:bg-black/20 hover:scale-[1.02] hover:shadow-2xl transition-all duration-500 group
+                             flex flex-col items-center text-center"
+                >
                   <div className="w-20 h-20 mb-6 flex items-center justify-center rounded-[2.5rem] overflow-hidden group-hover:rotate-6 transition-transform duration-500 shadow-lg relative">
                     {member.image_url ? (
                       <img src={member.image_url} alt={member.name} className="w-full h-full object-cover" />

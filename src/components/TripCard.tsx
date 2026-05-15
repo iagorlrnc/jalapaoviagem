@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Calendar, Users, Clock, ChevronRight, Star, AlertCircle } from 'lucide-react'
+import { Calendar, Users, Clock, ChevronRight, Star, AlertCircle, CheckCircle, RefreshCw } from 'lucide-react'
 import { Trip } from '../lib/supabase'
 import { ReservationModal } from './ReservationModal'
 
@@ -137,56 +137,13 @@ export function TripCard({ trip }: TripCardProps) {
 
           {/* Toggle details */}
           <button
-            onClick={() => setShowDetails(!showDetails)}
+            onClick={() => setShowDetails(true)}
             className="flex items-center gap-1 text-[#c98228] font-mono text-xs 
                        uppercase tracking-widest mb-4 hover:text-[#e8c070] transition-colors"
           >
-            <ChevronRight
-              size={14}
-              className={`transition-transform duration-300 ${showDetails ? 'rotate-90' : ''}`}
-            />
-            {showDetails ? 'Ocultar detalhes' : 'Ver detalhes'}
+            <ChevronRight size={14} />
+            Ver detalhes e roteiro
           </button>
-
-          {showDetails && (
-            <div className="mb-4 space-y-4 border-t border-black/5 pt-4">
-              {/* Highlights */}
-              <div>
-                <p className="font-mono text-[10px] uppercase tracking-widest text-[#c98228] mb-2">
-                  Destaques
-                </p>
-                  <div className="flex flex-wrap gap-2">
-                    {trip.highlights.map(h => (
-                      <span key={h}
-                        className="font-body text-[10px] uppercase tracking-wider text-[#c98228] bg-[#c98228]/5 
-                                   border border-[#c98228]/10 px-3 py-1 rounded-full">
-                        {h}
-                      </span>
-                    ))}
-                  </div>
-              </div>
-
-              {/* Includes */}
-              <div>
-                <p className="font-mono text-[10px] uppercase tracking-widest text-[#c98228] mb-2">
-                  Inclui
-                </p>
-                <ul className="space-y-1">
-                  {trip.includes.map(inc => (
-                    <li key={inc} className="flex items-center gap-2 font-body text-xs text-night/50">
-                      <span className="w-1 h-1 bg-[#c98228] rounded-full flex-shrink-0" />
-                      {inc}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="flex justify-between font-mono text-xs text-night/30">
-                <span>Retorno: {formatDate(trip.return_date)}</span>
-                <span>{trip.location}</span>
-              </div>
-            </div>
-          )}
 
           {/* CTA */}
           <button
@@ -206,6 +163,104 @@ export function TripCard({ trip }: TripCardProps) {
 
       {showModal && (
         <ReservationModal trip={trip} onClose={() => setShowModal(false)} />
+      )}
+
+      {showDetails && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/90 backdrop-blur-md" onClick={() => setShowDetails(false)} />
+          <div className="relative z-10 w-full max-w-4xl bg-white rounded-[3rem] overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300">
+            <div className="flex flex-col md:flex-row h-full max-h-[90vh]">
+              {/* Left: Image */}
+              <div className="md:w-1/2 relative h-64 md:h-auto">
+                <img src={trip.image_url} alt={trip.name} className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                <div className="absolute bottom-8 left-8">
+                  <h2 className="font-display text-4xl font-bold text-white mb-2">{trip.name}</h2>
+                  <div className="flex items-center gap-4 text-white/80 font-mono text-xs uppercase tracking-widest">
+                    <span className="flex items-center gap-2"><Calendar size={14} className="text-[#c98228]" /> {formatDate(trip.departure_date)}</span>
+                    <span className="flex items-center gap-2"><Clock size={14} className="text-[#c98228]" /> {trip.duration_days} Dias</span>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setShowDetails(false)}
+                  className="absolute top-6 left-6 w-10 h-10 bg-white/10 backdrop-blur-md text-white rounded-full flex items-center justify-center hover:bg-white/20 transition-all border border-white/20"
+                >
+                  <ChevronRight className="rotate-180" size={20} />
+                </button>
+              </div>
+
+              {/* Right: Info */}
+              <div className="md:w-1/2 p-10 overflow-y-auto bg-white flex flex-col">
+                <div className="flex justify-between items-start mb-8">
+                  <div>
+                    <p className="font-mono text-[10px] uppercase tracking-widest text-[#c98228] font-bold mb-1">Sobre esta jornada</p>
+                    <span className={`inline-block font-mono text-[10px] uppercase tracking-widest px-2 py-1 border font-bold ${difficultyColor[trip.difficulty]}`}>
+                      Dificuldade {trip.difficulty}
+                    </span>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-display text-3xl font-bold text-gradient">{formatPrice(trip.price)}</p>
+                    <p className="font-body text-night/40 text-[10px] uppercase tracking-widest">por pessoa</p>
+                  </div>
+                </div>
+
+                <div className="space-y-8 flex-1">
+                  <div>
+                    <p className="font-body text-night/70 text-sm leading-relaxed">
+                      {trip.description}
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-8">
+                    <div>
+                      <p className="font-mono text-[10px] uppercase tracking-widest text-[#c98228] font-bold mb-4">O que está incluído</p>
+                      <ul className="grid grid-cols-1 gap-3">
+                        {trip.includes.map(inc => (
+                          <li key={inc} className="flex items-center gap-3 font-body text-xs text-night/60">
+                            <div className="w-5 h-5 bg-sand-50 rounded-lg flex items-center justify-center shrink-0">
+                              <CheckCircle size={12} className="text-[#c98228]" />
+                            </div>
+                            {inc}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div>
+                      <p className="font-mono text-[10px] uppercase tracking-widest text-[#c98228] font-bold mb-4">Destaques do Roteiro</p>
+                      <div className="flex flex-wrap gap-2">
+                        {trip.highlights.map(h => (
+                          <span key={h} className="font-body text-[10px] uppercase tracking-wider text-[#c98228] bg-sand-50 border border-[#c98228]/10 px-4 py-2 rounded-xl">
+                            {h}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-8 mt-8 border-t border-black/5 flex gap-4">
+                  <div className="flex-1">
+                    <p className="font-mono text-[10px] text-night/30 uppercase mb-1">Localização</p>
+                    <p className="font-body text-xs text-night/60 font-bold">{trip.location}</p>
+                  </div>
+                  <div className="flex-1 text-right">
+                    <p className="font-mono text-[10px] text-night/30 uppercase mb-1">Retorno Previsto</p>
+                    <p className="font-body text-xs text-night/60 font-bold">{formatDate(trip.return_date)}</p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => { setShowDetails(false); setShowModal(true); }}
+                  disabled={isSoldOut}
+                  className="mt-8 w-full py-5 btn-primary rounded-2xl font-bold uppercase tracking-widest text-xs flex items-center justify-center gap-3"
+                >
+                  {isSoldOut ? 'Esgotado' : 'Quero Reservar Agora'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </>
   )

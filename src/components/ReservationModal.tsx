@@ -89,235 +89,152 @@ export function ReservationModal({ trip, onClose }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[120] flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
-        onClick={onClose}
-      />
+      <div className="absolute inset-0 bg-black/90 backdrop-blur-md" onClick={onClose} />
 
       {/* Modal */}
-      <div className="relative z-10 w-full max-w-2xl bg-white border border-black/5 
-                      overflow-y-auto max-h-[90vh] shadow-2xl rounded-[2.5rem]">
-        {/* Header */}
-        <div className="flex items-start justify-between p-8 border-b border-black/5">
-          <div>
-            <p className="section-label mb-1">✦ Reserva de Viagem</p>
-            <h2 className="font-display text-2xl font-bold text-night">{trip.name}</h2>
-            <p className="font-mono text-xs text-night/40 mt-1">
-              {new Date(trip.departure_date + 'T00:00:00').toLocaleDateString('pt-BR', {
-                weekday: 'long', day: '2-digit', month: 'long', year: 'numeric',
-              })}
-            </p>
+      <div className="relative z-10 w-full max-w-5xl bg-white rounded-[3rem] overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300">
+        <div className="flex flex-col md:flex-row h-full max-h-[90vh]">
+          
+          {/* Left: Image & Trip Summary */}
+          <div className="md:w-2/5 relative h-48 md:h-auto overflow-hidden">
+            <img src={trip.image_url} alt={trip.name} className="w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+            
+            <div className="absolute bottom-10 left-10 right-10">
+              <p className="font-mono text-[10px] uppercase tracking-widest text-[#c98228] font-bold mb-2">Você está reservando:</p>
+              <h2 className="font-display text-3xl font-bold text-white mb-4">{trip.name}</h2>
+              
+              <div className="space-y-3">
+                <div className="flex items-center gap-3 text-white/70 font-mono text-[10px] uppercase tracking-widest">
+                  <div className="w-6 h-6 bg-white/10 rounded flex items-center justify-center border border-white/10">
+                    <CheckCircle size={12} className="text-[#c98228]" />
+                  </div>
+                  <span>{new Date(trip.departure_date + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}</span>
+                </div>
+                <div className="flex items-center gap-3 text-white/70 font-mono text-[10px] uppercase tracking-widest">
+                  <div className="w-6 h-6 bg-white/10 rounded flex items-center justify-center border border-white/10">
+                    <CheckCircle size={12} className="text-[#c98228]" />
+                  </div>
+                  <span>{trip.duration_days} dias de expedição</span>
+                </div>
+              </div>
+
+              <div className="mt-8 pt-6 border-t border-white/10 flex justify-between items-end">
+                <div>
+                  <p className="font-mono text-[8px] uppercase tracking-widest text-white/40">Valor individual</p>
+                  <p className="font-display text-xl font-bold text-white">{formatPrice(trip.price)}</p>
+                </div>
+                <div className="text-right">
+                  <p className="font-mono text-[8px] uppercase tracking-widest text-[#c98228]">Total Estimado</p>
+                  <p className="font-display text-2xl font-bold text-[#c98228]">{formatPrice(totalPrice)}</p>
+                </div>
+              </div>
+            </div>
+
+            <button onClick={onClose} className="absolute top-6 left-6 w-8 h-8 bg-white/10 backdrop-blur-md text-white rounded-full flex items-center justify-center hover:bg-white/20 transition-all border border-white/10 md:hidden">
+              <X size={16} />
+            </button>
           </div>
-          <button
-            onClick={onClose}
-            className="w-10 h-10 border border-black/5 rounded-full flex items-center justify-center
-                       text-night/40 hover:text-night hover:bg-black/5 transition-all"
-          >
-            <X size={20} />
-          </button>
-        </div>
 
-        {step === 'form' && (
-          <div className="p-8 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              <div className="md:col-span-2">
-                <label className="font-mono text-[10px] uppercase tracking-widest text-night/40 block mb-2">
-                  Nome Completo *
-                </label>
-                <input
-                  type="text"
-                  name="client_name"
-                  value={form.client_name}
-                  onChange={handleChange}
-                  placeholder="Seu nome completo"
-                  className="input-field"
-                />
-              </div>
-
+          {/* Right: Form */}
+          <div className="md:w-3/5 p-10 md:p-12 overflow-y-auto bg-white">
+            <div className="flex justify-between items-center mb-10">
               <div>
-                <label className="font-mono text-[10px] uppercase tracking-widest text-night/40 block mb-2">
-                  E-mail *
-                </label>
-                <input
-                  type="email"
-                  name="client_email"
-                  value={form.client_email}
-                  onChange={handleChange}
-                  placeholder="seu@email.com"
-                  className="input-field"
-                />
+                <h3 className="font-display text-2xl font-bold text-night">Finalizar Solicitação</h3>
+                <p className="font-body text-night/40 text-xs mt-1">Preencha seus dados para garantir sua vaga.</p>
               </div>
-
-              <div>
-                <label className="font-mono text-[10px] uppercase tracking-widest text-night/40 block mb-2">
-                  Telefone / WhatsApp *
-                </label>
-                <input
-                  type="tel"
-                  name="client_phone"
-                  value={form.client_phone}
-                  onChange={handleChange}
-                  placeholder="(63) 99999-9999"
-                  className="input-field"
-                />
-              </div>
-
-              <div>
-                <label className="font-mono text-[10px] uppercase tracking-widest text-night/40 block mb-2">
-                  CPF *
-                </label>
-                <input
-                  type="text"
-                  name="client_cpf"
-                  value={form.client_cpf}
-                  onChange={handleChange}
-                  placeholder="000.000.000-00"
-                  className="input-field"
-                />
-              </div>
-
-              <div>
-                <label className="font-mono text-[10px] uppercase tracking-widest text-night/40 block mb-2">
-                  Número de Pessoas *
-                </label>
-                <select
-                  name="num_people"
-                  value={form.num_people}
-                  onChange={handleChange}
-                  className="input-field cursor-pointer"
-                >
-                  {Array.from({ length: Math.min(trip.available_spots, 6) }, (_, i) => i + 1).map(n => (
-                    <option key={n} value={n}>{n} pessoa{n > 1 ? 's' : ''}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="md:col-span-2">
-                <label className="font-mono text-[10px] uppercase tracking-widest text-night/40 block mb-2">
-                  Observações (opcional)
-                </label>
-                <textarea
-                  name="notes"
-                  value={form.notes}
-                  onChange={handleChange}
-                  placeholder="Restrições alimentares, necessidades especiais, dúvidas..."
-                  rows={3}
-                  className="input-field resize-none"
-                />
-              </div>
+              <button onClick={onClose} className="w-10 h-10 bg-black/5 text-night/40 rounded-full flex items-center justify-center hover:bg-black/10 transition-all hidden md:flex">
+                <X size={20} />
+              </button>
             </div>
 
-            {/* Price Summary */}
-            <div className="bg-sand-50/50 border border-black/5 p-6 rounded-3xl space-y-4">
-              <p className="font-mono text-[10px] uppercase tracking-widest text-[#c98228] font-bold">
-                Resumo do Pedido
-              </p>
-              <div className="flex justify-between font-body text-sm text-night/60">
-                <span>{form.num_people} × {trip.name}</span>
-                <span>{formatPrice(trip.price)} / pessoa</span>
-              </div>
-              <div className="border-t border-black/5 pt-4 flex justify-between items-center">
-                <span className="font-display font-bold text-night">Total da Reserva</span>
-                <span className="font-display text-2xl font-bold text-gradient">
-                  {formatPrice(totalPrice)}
-                </span>
-              </div>
-            </div>
+            {step === 'form' && (
+              <div className="space-y-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="md:col-span-2">
+                    <label className="font-mono text-[10px] uppercase tracking-widest text-[#c98228] font-bold block mb-2">Nome Completo</label>
+                    <input type="text" name="client_name" value={form.client_name} onChange={handleChange} placeholder="Como devemos te chamar?" className="input-field rounded-2xl bg-sand-50/30 border-sand-100 focus:border-[#c98228] focus:bg-white transition-all" />
+                  </div>
 
-            {errorMsg && (
-              <div className="flex items-center gap-3 text-red-600 bg-red-50 
-                              border border-red-100 p-4 rounded-2xl">
-                <AlertCircle size={18} />
-                <span className="font-body text-sm">{errorMsg}</span>
+                  <div>
+                    <label className="font-mono text-[10px] uppercase tracking-widest text-[#c98228] font-bold block mb-2">E-mail</label>
+                    <input type="email" name="client_email" value={form.client_email} onChange={handleChange} placeholder="seu@email.com" className="input-field rounded-2xl bg-sand-50/30 border-sand-100 focus:border-[#c98228] focus:bg-white transition-all" />
+                  </div>
+
+                  <div>
+                    <label className="font-mono text-[10px] uppercase tracking-widest text-[#c98228] font-bold block mb-2">Telefone (WhatsApp)</label>
+                    <input type="tel" name="client_phone" value={form.client_phone} onChange={handleChange} placeholder="(63) 99999-9999" className="input-field rounded-2xl bg-sand-50/30 border-sand-100 focus:border-[#c98228] focus:bg-white transition-all" />
+                  </div>
+
+                  <div>
+                    <label className="font-mono text-[10px] uppercase tracking-widest text-[#c98228] font-bold block mb-2">CPF</label>
+                    <input type="text" name="client_cpf" value={form.client_cpf} onChange={handleChange} placeholder="000.000.000-00" className="input-field rounded-2xl bg-sand-50/30 border-sand-100 focus:border-[#c98228] focus:bg-white transition-all" />
+                  </div>
+
+                  <div>
+                    <label className="font-mono text-[10px] uppercase tracking-widest text-[#c98228] font-bold block mb-2">Viajantes</label>
+                    <select name="num_people" value={form.num_people} onChange={handleChange} className="input-field rounded-2xl bg-sand-50/30 border-sand-100 focus:border-[#c98228] focus:bg-white transition-all cursor-pointer">
+                      {Array.from({ length: Math.min(trip.available_spots, 10) }, (_, i) => i + 1).map(n => (
+                        <option key={n} value={n}>{n} pessoa{n > 1 ? 's' : ''}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label className="font-mono text-[10px] uppercase tracking-widest text-[#c98228] font-bold block mb-2">Observações</label>
+                    <textarea name="notes" value={form.notes} onChange={handleChange} placeholder="Alguma restrição ou pedido especial?" rows={3} className="input-field rounded-2xl bg-sand-50/30 border-sand-100 focus:border-[#c98228] focus:bg-white transition-all resize-none" />
+                  </div>
+                </div>
+
+                {errorMsg && (
+                  <div className="flex items-center gap-3 text-red-600 bg-red-50 border border-red-100 p-4 rounded-2xl animate-shake">
+                    <AlertCircle size={18} />
+                    <span className="font-body text-xs font-bold">{errorMsg}</span>
+                  </div>
+                )}
+
+                <button onClick={handleSubmit} disabled={loading} className="w-full py-5 btn-primary rounded-[2rem] font-bold uppercase tracking-widest text-xs flex items-center justify-center gap-3 shadow-xl shadow-[#c98228]/20 transition-all active:scale-95">
+                  {loading ? (
+                    <><Loader2 size={18} className="animate-spin" /> Processando Solicitação...</>
+                  ) : (
+                    <>Confirmar Minha Reserva <CheckCircle size={18} /></>
+                  )}
+                </button>
               </div>
             )}
 
-            <div className="flex gap-4 pt-2">
-              <button
-                onClick={onClose}
-                className="btn-outline flex-1 py-4 text-xs rounded-full"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleSubmit}
-                disabled={loading}
-                className="btn-primary flex-1 py-4 text-xs flex items-center justify-center gap-2 rounded-full"
-              >
-                {loading ? (
-                  <><Loader2 size={16} className="animate-spin" /> Enviando...</>
-                ) : (
-                  'Confirmar Reserva'
-                )}
-              </button>
-            </div>
-          </div>
-        )}
+            {step === 'success' && (
+              <div className="h-full flex flex-col items-center justify-center text-center animate-in fade-in zoom-in duration-500">
+                <div className="w-24 h-24 bg-emerald-50 text-emerald-600 rounded-[2.5rem] flex items-center justify-center mb-8 shadow-inner">
+                  <CheckCircle size={48} strokeWidth={1.5} />
+                </div>
+                <h3 className="font-display text-4xl font-bold text-night mb-4">Sucesso!</h3>
+                <p className="font-body text-night/50 text-base leading-relaxed max-w-sm mb-10">
+                  Sua solicitação para <strong className="text-night font-bold">{trip.name}</strong> foi enviada.
+                  Nossa equipe entrará em contato via WhatsApp em poucos minutos.
+                </p>
+                <button onClick={onClose} className="btn-primary px-12 py-5 rounded-full text-xs uppercase tracking-widest">
+                  Voltar para o site
+                </button>
+              </div>
+            )}
 
-        {step === 'success' && (
-          <div className="p-12 flex flex-col items-center text-center gap-8">
-            <div className="w-20 h-20 bg-emerald-50 text-emerald-600 rounded-3xl
-                            flex items-center justify-center shadow-inner">
-              <CheckCircle size={40} />
-            </div>
-            <div>
-              <h3 className="font-display text-3xl font-bold text-night mb-3">
-                Reserva Solicitada!
-              </h3>
-              <p className="font-body text-night/50 text-base leading-relaxed max-w-sm mx-auto">
-                Sua solicitação para <strong className="text-night">{trip.name}</strong> foi recebida com sucesso.
-                Entraremos em contato via WhatsApp em breve.
-              </p>
-            </div>
-            <div className="bg-sand-50/50 border border-black/5 p-8 rounded-3xl w-full text-left space-y-3">
-              <p className="font-mono text-[10px] text-[#c98228] uppercase tracking-widest mb-4 font-bold">
-                Detalhes da Confirmação
-              </p>
-              <div className="flex justify-between font-body text-sm">
-                <span className="text-night/40 text-xs uppercase tracking-wider">Cliente</span>
-                <span className="text-night font-bold">{form.client_name}</span>
+            {step === 'error' && (
+              <div className="h-full flex flex-col items-center justify-center text-center">
+                <div className="w-20 h-20 bg-red-50 text-red-600 rounded-3xl flex items-center justify-center mb-6">
+                  <AlertCircle size={40} />
+                </div>
+                <h3 className="font-display text-2xl font-bold text-night mb-2">Ops! Ocorreu um erro</h3>
+                <p className="font-body text-night/50 text-sm mb-8">{errorMsg}</p>
+                <button onClick={() => setStep('form')} className="btn-primary px-10 py-4 rounded-full text-xs uppercase tracking-widest">
+                  Tentar Novamente
+                </button>
               </div>
-              <div className="flex justify-between font-body text-sm">
-                <span className="text-night/40 text-xs uppercase tracking-wider">Viagem</span>
-                <span className="text-night font-bold">{trip.name}</span>
-              </div>
-              <div className="flex justify-between font-body text-sm">
-                <span className="text-night/40 text-xs uppercase tracking-wider">Pessoas</span>
-                <span className="text-night font-bold">{form.num_people}</span>
-              </div>
-              <div className="flex justify-between font-body text-sm pt-3 border-t border-black/5">
-                <span className="text-night/40 text-xs uppercase tracking-wider">Valor Total</span>
-                <span className="text-gradient font-bold text-xl font-display">{formatPrice(totalPrice)}</span>
-              </div>
-            </div>
-            <button onClick={onClose} className="btn-primary px-16 py-4 rounded-full">
-              Fechar e Voltar
-            </button>
+            )}
           </div>
-        )}
-
-        {step === 'error' && (
-          <div className="p-12 flex flex-col items-center text-center gap-8">
-            <div className="w-20 h-20 bg-red-50 text-red-600 rounded-3xl
-                            flex items-center justify-center shadow-inner">
-              <AlertCircle size={40} />
-            </div>
-            <div>
-              <h3 className="font-display text-3xl font-bold text-night mb-3">Ops! Algo deu errado</h3>
-              <p className="font-body text-night/50 text-base">{errorMsg}</p>
-            </div>
-            <div className="flex gap-4 w-full max-w-xs mx-auto">
-              <button onClick={() => setStep('form')} className="btn-outline flex-1 py-4 rounded-full">
-                Tentar Novamente
-              </button>
-              <button onClick={onClose} className="btn-primary flex-1 py-4 rounded-full">
-                Fechar
-              </button>
-            </div>
-          </div>
-        )}
+        </div>
       </div>
     </div>
   )
