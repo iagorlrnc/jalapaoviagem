@@ -66,6 +66,11 @@ export interface SiteSettings {
   updated_at?: string
 }
 
+export interface ItineraryDay {
+  title: string
+  items: string[]
+}
+
 export interface Trip {
   id: string
   created_at: string
@@ -83,6 +88,7 @@ export interface Trip {
   difficulty: 'Fácil' | 'Moderado' | 'Difícil'
   includes: string[]
   is_active: boolean
+  itinerary: ItineraryDay[]
 }
 
 export interface Destination {

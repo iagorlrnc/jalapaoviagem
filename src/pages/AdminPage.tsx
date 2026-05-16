@@ -3,13 +3,13 @@ import { useNavigate } from 'react-router-dom'
 import {
   Compass, LogOut, Users, DollarSign, Calendar, TrendingUp,
   Search, ChevronDown, Trash2, CheckCircle, XCircle, Clock,
-  RefreshCw, Eye, MessageCircle, Copy, Loader2, Plus, Edit2,
+  RefreshCw, Eye, MessageCircle, Copy, Loader2, Plus, Edit2, ArrowUp, ArrowDown,
   MapPin, Image as ImageIcon, Star, LayoutGrid, Luggage, UserPlus, Settings, Phone, Mail, Clock4
 } from 'lucide-react'
 import { 
   getAllReservations, updateReservationStatus, deleteReservation,
   getTrips, createTrip, updateTrip, deleteTrip,
-  getDestinations, createDestination, updateDestination, deleteDestination,
+  getDestinations, createDestination, updateDestination, deleteDestination, updateDestinationsOrder,
   getTeamMembers, createTeamMember, updateTeamMember, deleteTeamMember,
   getSettings, updateSettings, uploadImage,
   getMessages, updateMessageStatus, deleteMessage
@@ -80,6 +80,7 @@ export function AdminPage() {
   const [isEditing, setIsEditing] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
   const [isViewing, setIsViewing] = useState(false)
+  const [isOrdering, setIsOrdering] = useState(false)
 
   useEffect(() => {
     const isAuth = sessionStorage.getItem('admin_authenticated')
@@ -237,7 +238,15 @@ export function AdminPage() {
               {activeTab === 'reservations' && <ReservationsList reservations={reservations} setReservations={setReservations} searchQuery={searchQuery} onView={(r: any) => { setSelectedItem(r); setIsViewing(true); }} />}
               {activeTab === 'messages' && <MessagesList messages={messages} setMessages={setMessages} searchQuery={searchQuery} onView={(m: any) => { setSelectedItem(m); setIsViewing(true); }} />}
               {activeTab === 'trips' && <TripsList trips={trips} setTrips={setTrips} onEdit={(t: any) => { setSelectedItem(t); setIsEditing(true); }} searchQuery={searchQuery} />}
-              {activeTab === 'destinations' && <DestinationsList destinations={destinations} setDestinations={setDestinations} onEdit={(d: any) => { setSelectedItem(d); setIsEditing(true); }} searchQuery={searchQuery} />}
+              {activeTab === 'destinations' && (
+                <DestinationsList 
+                  destinations={destinations} 
+                  setDestinations={setDestinations} 
+                  onEdit={(d: any) => { setSelectedItem(d); setIsEditing(true); }} 
+                  onOrder={() => setIsOrdering(true)}
+                  searchQuery={searchQuery} 
+                />
+              )}
               {activeTab === 'team' && <TeamList team={team} setTeam={setTeam} onEdit={(m: any) => { setSelectedItem(m); setIsEditing(true); }} searchQuery={searchQuery} />}
               {activeTab === 'settings' && <SettingsForm initialSettings={settings} onSave={async (data: any) => {
                 const res = await updateSettings(data);
@@ -341,6 +350,37 @@ export function AdminPage() {
                   }
                   setIsEditing(false); setIsAdding(false); setSelectedItem(null);
                 }} />}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Ordering Modal */}
+        {isOrdering && (
+          <div className="fixed inset-0 z-[110] flex items-center justify-center p-6">
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={() => setIsOrdering(false)} />
+            <div className="relative w-full max-w-2xl bg-white rounded-[3rem] shadow-2xl overflow-hidden flex flex-col max-h-[85vh] animate-in zoom-in-95 duration-300">
+              <div className="p-8 border-b border-black/5 flex items-center justify-between bg-white">
+                <div>
+                  <h3 className="font-body text-2xl font-bold text-black">Ordem de Exibição</h3>
+                  <p className="font-body text-[10px] uppercase tracking-widest text-black/40 mt-1">
+                    Arraste ou use as setas para organizar os 7 destinos principais do site.
+                  </p>
+                </div>
+                <button onClick={() => setIsOrdering(false)} className="p-2 hover:bg-black/5 rounded-full transition-colors">
+                  <XCircle size={24} className="text-black/20" />
+                </button>
+              </div>
+              
+              <div className="flex-1 overflow-y-auto p-8 bg-dusk/10">
+                <DestinationsOrderList 
+                  items={destinations} 
+                  onSave={async (newOrder) => {
+                    await updateDestinationsOrder(newOrder.map((id, index) => ({ id, order_index: index })));
+                    await loadAllData();
+                    setIsOrdering(false);
+                  }} 
+                />
               </div>
             </div>
           </div>
@@ -610,7 +650,7 @@ function TripsList({ trips, setTrips, onEdit, searchQuery }: any) {
   )
 }
 
-function DestinationsList({ destinations, setDestinations, onEdit, searchQuery }: any) {
+function DestinationsList({ destinations, setDestinations, onEdit, onOrder, searchQuery }: any) {
   const handleDelete = async (id: string) => {
     if (!confirm('Remover este destino?')) return
     await deleteDestination(id)
@@ -620,30 +660,126 @@ function DestinationsList({ destinations, setDestinations, onEdit, searchQuery }
   const filtered = destinations.filter((d: any) => !searchQuery || d.name.toLowerCase().includes(searchQuery.toLowerCase()))
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      {filtered.map((d: any) => (
-        <div key={d.id} className="bg-white rounded-[2rem] overflow-hidden border border-black/5 hover:shadow-xl transition-all duration-300 group">
-          <div className="h-48 relative">
-            <img src={d.image_url} alt={d.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-            <div className="absolute top-4 right-4 flex gap-2">
-              <button onClick={() => onEdit(d)} className="p-2 bg-white/90 backdrop-blur-sm rounded-full text-black/70 hover:text-sand-600 transition-colors"><Edit2 size={14} /></button>
-              <button onClick={() => handleDelete(d.id)} className="p-2 bg-white/90 backdrop-blur-sm rounded-full text-black/70 hover:text-red-600 transition-colors"><Trash2 size={14} /></button>
-            </div>
-            {!d.is_active && (
-              <div className="absolute top-4 left-4">
-                <span className="font-body text-[8px] bg-red-500 text-white px-2 py-1 rounded-full uppercase font-bold shadow-lg">
-                  Oculto
-                </span>
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <p className="font-body text-[10px] uppercase tracking-[0.2em] text-black/40">
+          Mostrando {Math.min(7, destinations.length)} de {destinations.length} destinos ativos (Limite de 7 no site)
+        </p>
+        <button 
+          onClick={onOrder}
+          className="flex items-center gap-2 px-6 py-2.5 bg-[#c98228] text-white rounded-full font-body text-[10px] uppercase tracking-widest font-bold hover:brightness-110 transition-all shadow-lg shadow-sand-500/20"
+        >
+          <TrendingUp size={14} /> Alterar Ordem
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {filtered.map((d: any, index: number) => (
+          <div key={d.id} className={`bg-white rounded-[2rem] overflow-hidden border border-black/5 hover:shadow-xl transition-all duration-300 group relative ${index >= 7 ? 'opacity-50 grayscale-[0.5]' : ''}`}>
+            <div className="h-48 relative">
+              <img src={d.image_url} alt={d.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+              <div className="absolute top-4 right-4 flex gap-2">
+                <button onClick={() => onEdit(d)} className="p-2 bg-white/90 backdrop-blur-sm rounded-full text-black/70 hover:text-sand-600 transition-colors"><Edit2 size={14} /></button>
+                <button onClick={() => handleDelete(d.id)} className="p-2 bg-white/90 backdrop-blur-sm rounded-full text-black/70 hover:text-red-600 transition-colors"><Trash2 size={14} /></button>
               </div>
-            )}
+              <div className="absolute top-4 left-4 flex flex-col gap-2">
+                <span className="font-body text-[8px] bg-black/80 text-white px-2 py-1 rounded-full uppercase font-bold shadow-lg">
+                  #{index + 1}
+                </span>
+                {index >= 7 && (
+                  <span className="font-body text-[8px] bg-amber-500 text-white px-2 py-1 rounded-full uppercase font-bold shadow-lg">
+                    Não exibido
+                  </span>
+                )}
+              </div>
+              {!d.is_active && (
+                <div className="absolute bottom-4 left-4">
+                  <span className="font-body text-[8px] bg-red-500 text-white px-2 py-1 rounded-full uppercase font-bold shadow-lg">
+                    Inativo
+                  </span>
+                </div>
+              )}
+            </div>
+            <div className="p-6">
+              <span className="font-body text-[8px] uppercase tracking-widest bg-sand-50 text-[#c98228] px-2 py-1 rounded-full">{d.tag}</span>
+              <h4 className="font-body text-black text-lg mt-3">{d.name}</h4>
+              <p className="font-body text-black/70 text-xs mt-2 line-clamp-2">{d.description}</p>
+            </div>
           </div>
-          <div className="p-6">
-            <span className="font-body text-[8px] uppercase tracking-widest bg-sand-50 text-[#c98228] px-2 py-1 rounded-full">{d.tag}</span>
-            <h4 className="font-body text-black text-lg mt-3">{d.name}</h4>
-            <p className="font-body text-black/70 text-xs mt-2 line-clamp-2">{d.description}</p>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function DestinationsOrderList({ items, onSave }: { items: Destination[], onSave: (ids: string[]) => void }) {
+  const [list, setList] = useState(items)
+  const [saving, setSaving] = useState(false)
+
+  const move = (index: number, direction: 'up' | 'down') => {
+    const newList = [...list]
+    const targetIndex = direction === 'up' ? index - 1 : index + 1
+    if (targetIndex < 0 || targetIndex >= newList.length) return
+    
+    const [movedItem] = newList.splice(index, 1)
+    newList.splice(targetIndex, 0, movedItem)
+    setList(newList)
+  }
+
+  const handleSave = async () => {
+    setSaving(true)
+    await onSave(list.map(i => i.id))
+    setSaving(false)
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="grid gap-3">
+        {list.map((item, i) => (
+          <div key={item.id} className={`flex items-center gap-4 p-4 bg-white rounded-2xl border border-black/5 shadow-sm transition-all hover:border-sand-200 ${i < 7 ? 'border-l-4 border-l-sand-500' : 'opacity-60 grayscale-[0.5]'}`}>
+            <div className="w-10 h-10 flex items-center justify-center font-body font-black text-black/10 text-2xl shrink-0">
+              {String(i + 1).padStart(2, '0')}
+            </div>
+            <div className="w-16 h-16 rounded-xl overflow-hidden shadow-md shrink-0 border border-black/5">
+              <img src={item.image_url} className="w-full h-full object-cover" alt={item.name} />
+            </div>
+            <div className="flex-1">
+              <h4 className="font-body font-bold text-base text-black leading-tight">{item.name}</h4>
+              <p className="font-body text-[10px] uppercase tracking-widest text-sand-600 mt-1">{item.tag}</p>
+            </div>
+            <div className="flex gap-2">
+              <button 
+                disabled={i === 0 || saving}
+                onClick={() => move(i, 'up')}
+                className="p-3 bg-black/5 hover:bg-sand-500 hover:text-white rounded-xl text-black/40 disabled:opacity-0 transition-all"
+                title="Mover para cima"
+              >
+                <ArrowUp size={20} />
+              </button>
+              <button 
+                disabled={i === list.length - 1 || saving}
+                onClick={() => move(i, 'down')}
+                className="p-3 bg-black/5 hover:bg-sand-500 hover:text-white rounded-xl text-black/40 disabled:opacity-0 transition-all"
+                title="Mover para baixo"
+              >
+                <ArrowDown size={20} />
+              </button>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
+      
+      <button 
+        disabled={saving}
+        onClick={handleSave}
+        className="w-full btn-primary py-5 rounded-2xl flex items-center justify-center gap-3 shadow-xl shadow-sand-500/30 text-base"
+      >
+        {saving ? (
+          <Loader2 size={24} className="animate-spin" />
+        ) : (
+          <><RefreshCw size={20} /> Aplicar e Salvar Nova Ordem</>
+        )}
+      </button>
     </div>
   )
 }
@@ -898,6 +1034,75 @@ function ArrayEditor({ label, items, onChange, placeholder }: { label: string, i
   )
 }
 
+function ItineraryEditor({ items = [], onChange }: { items: any[], onChange: (items: any[]) => void }) {
+  const addDay = () => {
+    onChange([...items, { title: `Dia ${items.length + 1}`, items: [] }])
+  }
+
+  const updateDay = (index: number, day: any) => {
+    const newItems = [...items]
+    newItems[index] = day
+    onChange(newItems)
+  }
+
+  const removeDay = (index: number) => {
+    onChange(items.filter((_, i) => i !== index))
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <label className="label">Roteiro da Viagem</label>
+        <button 
+          type="button"
+          onClick={addDay} 
+          className="flex items-center gap-2 px-4 py-2 bg-sand-50 text-[#c98228] rounded-xl hover:bg-[#c98228] hover:text-white transition-all text-[10px] font-bold uppercase tracking-widest"
+        >
+          <Plus size={14} /> Adicionar Dia ao Roteiro
+        </button>
+      </div>
+
+      <div className="space-y-4">
+        {items.map((day, i) => (
+          <div key={i} className="p-6 bg-black/5 rounded-[2rem] border border-black/5 relative group">
+            <button 
+              type="button"
+              onClick={() => removeDay(i)} 
+              className="absolute top-6 right-6 p-2 text-night/10 hover:text-red-600 transition-colors"
+            >
+              <Trash2 size={16} />
+            </button>
+
+            <div className="space-y-4">
+              <div>
+                <label className="text-[10px] uppercase tracking-widest text-black/40 font-bold mb-2 block">Título do Dia {i + 1}</label>
+                <input 
+                  className="input-field rounded-xl bg-white border-transparent focus:border-sand-500" 
+                  value={day.title} 
+                  onChange={e => updateDay(i, { ...day, title: e.target.value })} 
+                  placeholder={`Ex: Dia ${i + 1} - Chegada e Boas-vindas`}
+                />
+              </div>
+
+              <ArrayEditor 
+                label="Atividades" 
+                items={day.items || []} 
+                onChange={(newItems) => updateDay(i, { ...day, items: newItems })} 
+                placeholder="Ex: Visita ao Fervedouro do Buriti" 
+              />
+            </div>
+          </div>
+        ))}
+        {items.length === 0 && (
+          <div className="py-12 text-center border-2 border-dashed border-black/10 rounded-[2.5rem] text-night/20 font-body text-xs uppercase tracking-widest">
+            Nenhum dia de roteiro adicionado
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 function TripForm({ item, onSave }: any) {
   const [form, setForm] = useState(item || { 
     name: '', 
@@ -913,6 +1118,7 @@ function TripForm({ item, onSave }: any) {
     difficulty: 'Moderado',
     highlights: [],
     includes: [],
+    itinerary: [],
     is_active: true
   })
 
@@ -1013,6 +1219,13 @@ function TripForm({ item, onSave }: any) {
             items={form.includes || []} 
             onChange={(items) => setForm({...form, includes: items})} 
             placeholder="Ex: Transporte 4x4" 
+          />
+        </div>
+
+        <div className="col-span-2 border-t border-black/5 pt-8 mt-4">
+          <ItineraryEditor 
+            items={form.itinerary || []} 
+            onChange={(items) => setForm({...form, itinerary: items})} 
           />
         </div>
 

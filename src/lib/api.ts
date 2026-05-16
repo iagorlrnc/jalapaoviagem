@@ -103,6 +103,15 @@ export async function deleteDestination(id: string) {
   return { error }
 }
 
+export async function updateDestinationsOrder(items: { id: string, order_index: number }[]) {
+  const updates = items.map(item => 
+    supabase.from('destinations').update({ order_index: item.order_index }).eq('id', item.id)
+  )
+  const results = await Promise.all(updates)
+  const error = results.find(r => r.error)?.error
+  return { error }
+}
+
 // ─── SITE SETTINGS ────────────────────────────────────────────────────────────
 
 export async function getSettings(): Promise<SiteSettings | null> {

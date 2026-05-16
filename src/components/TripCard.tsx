@@ -226,16 +226,51 @@ export function TripCard({ trip }: TripCardProps) {
                       </ul>
                     </div>
 
-                    <div>
-                      <p className="font-mono text-[10px] uppercase tracking-widest text-[#c98228] font-bold mb-4">Destaques do Roteiro</p>
-                      <div className="flex flex-wrap gap-2">
-                        {trip.highlights.map(h => (
-                          <span key={h} className="font-body text-[10px] uppercase tracking-wider text-[#c98228] bg-sand-50 border border-[#c98228]/10 px-4 py-2 rounded-xl">
-                            {h}
-                          </span>
-                        ))}
+                    {trip.itinerary && trip.itinerary.length > 0 && (
+                      <div className="col-span-1 pt-8 border-t border-black/5">
+                        <p className="font-mono text-[10px] uppercase tracking-widest text-[#c98228] font-bold mb-6">Roteiro Completo</p>
+                        <div className="space-y-6">
+                          {trip.itinerary.map((day, idx) => (
+                            <div key={idx} className="relative pl-6 border-l border-[#c98228]/20 last:border-l-transparent">
+                              <div className="absolute left-[-5px] top-0 w-2 h-2 rounded-full bg-[#c98228]" />
+                              <h4 className="font-display text-sm font-bold text-night mb-2">{day.title}</h4>
+                              <ul className="space-y-2">
+                                {day.items.map((item, itemIdx) => (
+                                  <li key={itemIdx} className="flex items-start gap-2 font-body text-[11px] text-night/50">
+                                    <div className="w-1 h-1 rounded-full bg-[#c98228]/40 mt-1.5 shrink-0" />
+                                    {item}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </div>
+                    )}
+
+                    {!trip.itinerary || trip.itinerary.length === 0 ? (
+                      <div>
+                        <p className="font-mono text-[10px] uppercase tracking-widest text-[#c98228] font-bold mb-4">Destaques da Jornada</p>
+                        <div className="flex flex-wrap gap-2">
+                          {trip.highlights.map(h => (
+                            <span key={h} className="font-body text-[10px] uppercase tracking-wider text-[#c98228] bg-sand-50 border border-[#c98228]/10 px-4 py-2 rounded-xl">
+                              {h}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <div>
+                        <p className="font-mono text-[10px] uppercase tracking-widest text-[#c98228] font-bold mb-4">Destaques rápidos</p>
+                        <div className="flex flex-wrap gap-2">
+                          {trip.highlights.map(h => (
+                            <span key={h} className="font-body text-[10px] uppercase tracking-wider text-[#c98228]/60 bg-sand-50/50 px-3 py-1.5 rounded-lg">
+                              {h}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
 
