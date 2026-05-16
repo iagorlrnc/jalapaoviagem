@@ -385,7 +385,7 @@ export function TripCard({ trip }: TripCardProps) {
                     >
                       {isSoldOut ? 'Esgotado' : (
                         <>
-                          {modalStep === 'summary' && (trip.itinerary?.length > 0 ? 'Ver Roteiro' : 'Ver Valor')}
+                          {modalStep === 'summary' && ((trip.itinerary?.length || 0) > 0 ? 'Ver Roteiro' : 'Ver Valor')}
                           {modalStep === 'itinerary' && (currentDayIdx < (trip.itinerary?.length || 0) - 1 ? 'Próximo Dia' : 'Ver Valor')}
                           {modalStep === 'price' && 'Quero Reservar Agora'}
                         </>

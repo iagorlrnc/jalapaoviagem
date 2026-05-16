@@ -88,7 +88,7 @@ export interface Trip {
   difficulty: 'Fácil' | 'Moderado' | 'Difícil'
   includes: string[]
   is_active: boolean
-  itinerary: ItineraryDay[]
+  itinerary?: ItineraryDay[]
 }
 
 export interface Destination {

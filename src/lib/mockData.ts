@@ -18,6 +18,7 @@ export const mockTrips: Trip[] = [
     difficulty: 'Moderado',
     includes: ['Transporte 4x4', 'Guia especializado', 'Alimentação completa', 'Equipamento de camping', 'Seguro viagem'],
     is_active: true,
+    itinerary: [],
   },
   {
     id: '550e8400-e29b-41d4-a716-446655440002',
@@ -36,6 +37,7 @@ export const mockTrips: Trip[] = [
     difficulty: 'Fácil',
     includes: ['Transporte 4x4', 'Guia local certificado', 'Hospedagem em pousada', 'Café da manhã regional', 'Seguro viagem'],
     is_active: true,
+    itinerary: [],
   },
   {
     id: '550e8400-e29b-41d4-a716-446655440003',
@@ -54,6 +56,7 @@ export const mockTrips: Trip[] = [
     difficulty: 'Difícil',
     includes: ['Transporte 4x4 exclusivo', 'Guia especialista', 'Alimentação completa', 'Hospedagem mista (pousada + camping)', 'Kit capim dourado', 'Seguro premium'],
     is_active: true,
+    itinerary: [],
   },
   {
     id: '550e8400-e29b-41d4-a716-446655440004',
