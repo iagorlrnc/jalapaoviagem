@@ -1,14 +1,15 @@
 import { useState } from 'react'
-import { X, CheckCircle, Loader2, AlertCircle } from 'lucide-react'
+import { X, CheckCircle, Loader2, AlertCircle, Clock } from 'lucide-react'
 import { Trip } from '../lib/supabase'
 import { createReservation } from '../lib/api'
 
 interface Props {
   trip: Trip
   onClose: () => void
+  onShowDetails?: () => void
 }
 
-export function ReservationModal({ trip, onClose }: Props) {
+export function ReservationModal({ trip, onClose, onShowDetails }: Props) {
   const [step, setStep] = useState<'form' | 'success' | 'error'>('form')
   const [loading, setLoading] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
@@ -202,6 +203,16 @@ export function ReservationModal({ trip, onClose }: Props) {
                     <>Confirmar Minha Reserva <CheckCircle size={18} /></>
                   )}
                 </button>
+
+                {onShowDetails && (
+                  <button 
+                    type="button"
+                    onClick={onShowDetails}
+                    className="w-full py-4 mt-3 border border-[#c98228]/30 text-[#c98228] font-mono text-[10px] uppercase tracking-widest rounded-[2rem] hover:bg-sand-50 transition-all flex items-center justify-center gap-2"
+                  >
+                    <Clock size={14} /> Ver detalhes e roteiro
+                  </button>
+                )}
               </div>
             )}
 
