@@ -85,7 +85,7 @@ export interface Trip {
   return_date: string
   image_url: string
   highlights: string[]
-  difficulty: 'Fácil' | 'Moderado' | 'Difícil'
+  difficulty?: 'Fácil' | 'Moderado' | 'Difícil'
   includes: string[]
   is_active: boolean
   itinerary?: ItineraryDay[]

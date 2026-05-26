@@ -1115,7 +1115,6 @@ function TripForm({ item, onSave }: any) {
     duration_days: 1,
     image_url: '', 
     description: '', 
-    difficulty: 'Moderado',
     highlights: [],
     includes: [],
     itinerary: [],
@@ -1179,14 +1178,6 @@ function TripForm({ item, onSave }: any) {
           <input type="number" className="input-field rounded-2xl" value={form.available_spots} onChange={e => setForm({...form, available_spots: Number(e.target.value)})} />
         </div>
 
-        <div>
-          <label className="label">Dificuldade</label>
-          <select className="input-field rounded-2xl" value={form.difficulty} onChange={e => setForm({...form, difficulty: e.target.value})}>
-            <option value="Fácil">Fácil</option>
-            <option value="Moderado">Moderado</option>
-            <option value="Difícil">Difícil</option>
-          </select>
-        </div>
 
         <div>
           <label className="label">Duração (Dias)</label>

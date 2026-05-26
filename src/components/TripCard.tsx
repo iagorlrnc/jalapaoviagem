@@ -7,11 +7,6 @@ interface TripCardProps {
   trip: Trip
 }
 
-const difficultyColor = {
-  Fácil: 'text-emerald-400 border-emerald-400/30 bg-emerald-400/10',
-  Moderado: 'text-yellow-400 border-yellow-400/30 bg-yellow-400/10',
-  Difícil: 'text-red-400 border-red-400/30 bg-red-400/10',
-}
 
 export function TripCard({ trip }: TripCardProps) {
   const [showModal, setShowModal] = useState(false)
@@ -93,10 +88,6 @@ export function TripCard({ trip }: TripCardProps) {
 
           {/* Badges */}
           <div className="absolute top-4 left-4 flex flex-col gap-2 z-10">
-            <span className={`font-mono text-[10px] uppercase tracking-widest px-2 py-1
-                              border font-bold ${difficultyColor[trip.difficulty]}`}>
-              {trip.difficulty}
-            </span>
             {isSoldOut && (
               <span className="font-mono text-[10px] uppercase tracking-widest px-2 py-1
                                bg-red-900/80 text-red-300 border border-red-500/30 font-bold">
@@ -249,11 +240,6 @@ export function TripCard({ trip }: TripCardProps) {
                       {modalStep === 'itinerary' && `Roteiro - ${trip.itinerary?.[currentDayIdx]?.title || ''}`}
                       {modalStep === 'price' && 'Investimento e Reserva'}
                     </p>
-                    {modalStep === 'summary' && (
-                      <span className={`inline-block font-mono text-[10px] uppercase tracking-widest px-2 py-1 border font-bold ${difficultyColor[trip.difficulty]}`}>
-                        Dificuldade {trip.difficulty}
-                      </span>
-                    )}
                   </div>
                   {modalStep === 'summary' && (
                     <div className="text-right">
