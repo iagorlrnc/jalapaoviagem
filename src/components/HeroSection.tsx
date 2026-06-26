@@ -90,7 +90,7 @@ export function HeroSection() {
           {[
             { value: '+500', label: 'Aventureiros' },
             { value: '8 anos', label: 'de Experiência' },
-            { value: '100%', label: 'Satisfação' },
+            { value: '12', label: 'Destinos' },
           ].map(({ value, label }) => (
             <div key={label} className="text-right animate-fade-up opacity-0 animate-delay-500">
               <div className="font-display text-2xl font-bold text-gradient">{value}</div>
